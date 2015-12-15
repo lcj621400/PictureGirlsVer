@@ -1,4 +1,4 @@
-package com.lichunjing.picturegirls.ui;
+package com.lichunjing.picturegirls.ui.mainpage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lichunjing.picturegirls.R;
@@ -222,7 +223,11 @@ public class MainActivity extends BasePicActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_push) {
+            Toast.makeText(mApplication,item.getTitle(),Toast.LENGTH_SHORT).show();
+            return true;
+        }else if(id==R.id.action_recycle){
+            Toast.makeText(mApplication,item.getTitle(),Toast.LENGTH_SHORT).show();
             return true;
         }
 

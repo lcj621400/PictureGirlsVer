@@ -8,6 +8,7 @@ import android.view.Window;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
 import com.lichunjing.picturegirls.manager.AppManager;
+import com.lichunjing.picturegirls.ui.mainpage.MainActivity;
 
 /**
  * 启动欢迎页
