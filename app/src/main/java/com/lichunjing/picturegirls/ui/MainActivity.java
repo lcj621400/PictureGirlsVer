@@ -1,54 +1,45 @@
 package com.lichunjing.picturegirls.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
-import com.lichunjing.picturegirls.bean.GirlArrayBean;
-import com.lichunjing.picturegirls.bean.GirlBean;
+import com.lichunjing.picturegirls.bean.cover.GirlCoverBean;
+import com.lichunjing.picturegirls.bean.cover.GirlListBean;
 import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.http.PicUrl;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
+import com.lichunjing.picturegirls.ui.gallery.GirlGalleryActivity;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 import com.zhy.http.okhttp.callback.ResultCallback;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends BasePicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -56,7 +47,7 @@ public class MainActivity extends BasePicActivity
     private XRecyclerView mRecycleview;
     private MainAdapter recycleViewAdapter;
     private List<String> recycleDatas;
-    private List<GirlBean> picDatas;
+    private List<GirlCoverBean> picDatas;
     private int page=1;
     private int pageCoun=20;
 
@@ -91,6 +82,17 @@ public class MainActivity extends BasePicActivity
                  getPicDatas(1);
             }
     });
+        mRecycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
 
     }
@@ -109,13 +111,16 @@ public class MainActivity extends BasePicActivity
         recycleViewAdapter.setOnItemClickListener(new MainAdapter.OnItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Toast.makeText(mApplication,position+"",Toast.LENGTH_SHORT).show();
+                int id=picDatas.get(position).getId();
+                Intent intent=new Intent(MainActivity.this, GirlGalleryActivity.class);
+                intent.putExtra(GirlGalleryActivity.GALLERY_ID,id);
+                startActivity(intent);
             }
         });
 
     }
     private void getPicDatas(final int type){
-        Http.getImage(page, pageCoun, new ResultCallback<GirlArrayBean>() {
+        Http.getCoverList(page, pageCoun, new ResultCallback<GirlListBean>() {
             @Override
             public void onError(Request request, Exception e) {
                 Log.d("error",e.toString());
@@ -124,13 +129,13 @@ public class MainActivity extends BasePicActivity
             }
 
             @Override
-            public void onResponse(GirlArrayBean response) {
+            public void onResponse(GirlListBean response) {
                 String s=response.toString();
                 Log.d("success",s);
                 mRecycleview.loadMoreComplete();
                 mRecycleview.refreshComplete();
                 if(response!=null){
-                    List<GirlBean> datas = response.getTngou();
+                    List<GirlCoverBean> datas = response.getTngou();
                     if(datas==null&&datas.isEmpty()){
                         return;
                     }
@@ -172,14 +177,7 @@ public class MainActivity extends BasePicActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("写真");
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -190,6 +188,8 @@ public class MainActivity extends BasePicActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mRecycleview= (XRecyclerView) findViewById(R.id.main_recycleview);
+
+
     }
 
     @Override
@@ -263,14 +263,14 @@ public class MainActivity extends BasePicActivity
     public static class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> implements View.OnClickListener{
 
         private Context context;
-        private List<GirlBean> images;
+        private List<GirlCoverBean> images;
         private int lastPosition=-1;
         private List<int[]> size=new ArrayList<int[]>();
         private OnItemClickListener mOnItemClickListener;
         private int screenWidth;
         private int screenHeight;
 
-        public MainAdapter(Context context,List<GirlBean> datas){
+        public MainAdapter(Context context,List<GirlCoverBean> datas){
             this.context=context;
             images=datas;
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -290,7 +290,7 @@ public class MainActivity extends BasePicActivity
 
         @Override
         public void onBindViewHolder(MainViewHolder holder, int position) {
-            GirlBean girlBean = images.get(position);
+            GirlCoverBean girlBean = images.get(position);
             holder.mainTitle.setText(girlBean.getTitle()+"");
             String img=girlBean.getImg();
             String url=null;

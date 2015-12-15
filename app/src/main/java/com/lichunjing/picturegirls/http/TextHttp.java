@@ -1,7 +1,7 @@
 package com.lichunjing.picturegirls.http;
 
 import com.google.gson.Gson;
-import com.lichunjing.picturegirls.bean.GirlArrayBean;
+import com.lichunjing.picturegirls.bean.cover.GirlListBean;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -36,7 +36,7 @@ public class TextHttp {
             public void onResponse(final Response response) throws IOException {
                 String htmlStr = response.body().string();
                 Gson gson = new Gson();
-                GirlArrayBean girlArrayBean = gson.fromJson(htmlStr, GirlArrayBean.class);
+                GirlListBean girlArrayBean = gson.fromJson(htmlStr, GirlListBean.class);
             }
         });
     }

@@ -9,7 +9,9 @@ import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
 import com.lichunjing.picturegirls.manager.AppManager;
 
-
+/**
+ * 启动欢迎页
+ */
 public class LoadingActivity extends BasePicActivity {
 
     @Override

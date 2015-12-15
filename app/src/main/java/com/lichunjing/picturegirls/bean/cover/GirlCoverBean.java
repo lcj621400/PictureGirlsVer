@@ -1,9 +1,10 @@
-package com.lichunjing.picturegirls.bean;
+package com.lichunjing.picturegirls.bean.cover;
 
 /**
  * Created by lcj621400 on 2015/12/12.
+ * 分类封面详细信息
  */
-public class GirlBean {
+public class GirlCoverBean {
 
     /*
             "count": 155,
@@ -17,15 +18,15 @@ public class GirlBean {
             "title": "魅研社美女瑞莎Trista巨乳诱惑写真"
     */
 
-    private int count;
-    private int fcount;
-    private int galleryclass;
-    private int id;
-    private String img;
-    private int rcount;
-    private int size;
-    private long time;
-    private String title;
+    private int count;//访问数
+    private int fcount;//收藏数
+    private int galleryclass;//图片分类
+    private int id;//图库ID编码
+    private String img;//图库封面
+    private int rcount;//回复数
+    private int size;//图片多少张
+    private long time;//发布时间
+    private String title;//标题
 
     public int getCount() {
         return count;
@@ -102,7 +103,7 @@ public class GirlBean {
 
     @Override
     public String toString() {
-        return "GirlBean{" +
+        return "GirlCoverBean{" +
                 "count=" + count +
                 ", fcount=" + fcount +
                 ", galleryclass=" + galleryclass +

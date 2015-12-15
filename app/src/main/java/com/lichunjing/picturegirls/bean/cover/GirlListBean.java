@@ -1,11 +1,12 @@
-package com.lichunjing.picturegirls.bean;
+package com.lichunjing.picturegirls.bean.cover;
 
 import java.util.List;
 
 /**
  * Created by lcj621400 on 2015/12/12.
+ * 图片分类列表
  */
-public class GirlArrayBean {
+public class GirlListBean {
     /*
     "total": 160,
     "tngou": [
@@ -16,13 +17,13 @@ public class GirlArrayBean {
     */
 
     private int total;
-    private List<GirlBean> tngou;
+    private List<GirlCoverBean> tngou;
 
-    public List<GirlBean> getTngou() {
+    public List<GirlCoverBean> getTngou() {
         return tngou;
     }
 
-    public void setTngou(List<GirlBean> tngou) {
+    public void setTngou(List<GirlCoverBean> tngou) {
         this.tngou = tngou;
     }
 
@@ -36,7 +37,7 @@ public class GirlArrayBean {
 
     @Override
     public String toString() {
-        return "GirlArrayBean{" +
+        return "GirlListBean{" +
                 "tngou=" + tngou +
                 ", total=" + total +
                 '}';

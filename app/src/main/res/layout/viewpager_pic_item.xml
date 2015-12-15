@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    app:cardElevation="6dp"
+    app:cardMaxElevation="6dp"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageview"
+        android:layout_width="match_parent"
+        android:scaleType="fitCenter"
+        android:layout_height="match_parent" />
+</android.support.v7.widget.CardView>
