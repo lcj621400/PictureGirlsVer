@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -28,16 +29,31 @@ import java.util.Date;
 public class AppException extends Exception implements Thread.UncaughtExceptionHandler{
 
     private BasePicApp mApplicationContext;
+    private static AppException INSTANCE=new AppException();
+    private Thread.UncaughtExceptionHandler mDefaultHandler;
 
 
-    public AppException(Context context){
-        this.mApplicationContext= (BasePicApp) context;
+    private AppException(){
+
     }
+
+    public static AppException getInstance(){
+        return INSTANCE;
+    }
+    public void init(Context context){
+        mApplicationContext= (BasePicApp) context.getApplicationContext();
+        mDefaultHandler=Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(this);
+    }
+
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-//        if(handleException(ex)){
-//            System.exit(0);
-//        }
+        if(handleException(ex)&&mDefaultHandler!=null){
+            System.exit(0);
+        }else{
+            //如果用户没有处理则让系统默认的异常处理器来处理
+            mDefaultHandler.uncaughtException(thread, ex);
+        }
     }
 
     /**
@@ -84,11 +100,11 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
         //标记是否覆盖，还是追加
         boolean append=false;
 
+        try {
         File logFile= FileUtils.getLogFile();
         if(logFile==null){
             return false;
         }
-
         //如果logFile上次编辑的时间超过5秒，则追加信息的log信息
         if(System.currentTimeMillis()-logFile.lastModified()>5000){
             append=true;
@@ -100,12 +116,15 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
         //写入时间
         pw.println(time);
         //导出手机信息
+        collectPhoneInfo(pw);
         //换行
         pw.println();
         // 导出异常的调用栈信息
         ex.printStackTrace(pw);
         pw.println();
         pw.close();
+        }catch (Exception e){
+        }
         return append;
     }
 
@@ -152,7 +171,7 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
      */
     private void showExitDialog(Activity activity){
         new AlertDialog.Builder(activity)
-                .setTitle("程序发生异常")
+                .setTitle("程序发生异常,啦啦啦啦啦啦")
                 .setCancelable(false)
                 .setPositiveButton("退出", new DialogInterface.OnClickListener() {
             @Override

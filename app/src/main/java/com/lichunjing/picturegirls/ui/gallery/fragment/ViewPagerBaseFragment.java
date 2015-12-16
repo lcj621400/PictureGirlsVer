@@ -1,7 +1,6 @@
 package com.lichunjing.picturegirls.ui.gallery.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.gallery.GirlGalleryBean;
 import com.lichunjing.picturegirls.bean.gallery.GirlPictureBean;
@@ -20,9 +20,6 @@ import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.widget.jellyViewPager.JellyViewPager;
 import com.squareup.okhttp.Request;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.Picasso;
 import com.zhy.http.okhttp.callback.ResultCallback;
 
 import java.util.ArrayList;
@@ -95,13 +92,11 @@ public class ViewPagerBaseFragment extends Fragment {
 
         private List<GirlGalleryBean> datas;
         private Context context;
-        private List<View> views;
         private LayoutInflater inflater;
 
         public GirlViewPagerAdapter(Context context,List<GirlGalleryBean> datas){
             this.context=context;
             this.datas=datas;
-            views =new ArrayList<>();
             inflater=LayoutInflater.from(context);
         }
 
@@ -113,30 +108,18 @@ public class ViewPagerBaseFragment extends Fragment {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(views.get(position));
+            container.removeView((View) object);
+
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-
             View view=inflater.inflate(R.layout.viewpager_pic_item,null);
             ImageView imageView= (ImageView) view.findViewById(R.id.imageview);
-
             String url=PicUrl.BASE_IMAGE_URL+datas.get(position).getSrc();
-            Picasso.with(context).load(url).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).tag(context).into(imageView, new Callback() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError() {
-
-                }
-            });
-            views.add(view);
-            container.addView(views.get(position));
-            return views.get(position);
+            Glide.with(context).load(url).into(imageView);
+            container.addView(view);
+            return view;
         }
 
         @Override

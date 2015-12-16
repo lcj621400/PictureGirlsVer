@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.lichunjing.picturegirls.manager.AppManager;
+import com.squareup.picasso.Picasso;
 
 
 /**

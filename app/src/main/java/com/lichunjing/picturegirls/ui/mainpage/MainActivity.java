@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
@@ -260,9 +261,15 @@ public class MainActivity extends BasePicActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Picasso.with(this).resumeTag(this);
+    }
+
+    @Override
     protected void onDestroy() {
-        super.onDestroy();
         Picasso.with(this).cancelTag(this);
+        super.onDestroy();
     }
 
     public static class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> implements View.OnClickListener{
@@ -321,7 +328,7 @@ public class MainActivity extends BasePicActivity
                 }
                 ViewGroup.LayoutParams params=new ViewGroup.LayoutParams(width,height);
                 holder.mainCard.setLayoutParams(params);
-                Picasso.with(context).load(url).resize(width,height).centerCrop().tag(context).into(holder.mainImageview);
+                Glide.with(context).load(url).override(width,height).into(holder.mainImageview);
             }
             if(position>lastPosition){
                 Animation animation = AnimationUtils.loadAnimation(context, R.anim.main_item_bottom_in);

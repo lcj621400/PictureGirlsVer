@@ -28,6 +28,14 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.gallery.GirlGalleryActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+
+
+        <meta-data android:name="com.lichunjing.picturegirls.configure.GlideSetting"
+            android:value="GlideModule"
+            />
     </application>
+
+
 
 </manifest>

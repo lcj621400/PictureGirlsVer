@@ -12,36 +12,33 @@ public class AppConfig {
     /**
      * 应用在sd卡中创建缓存目录的名称
      */
-    public static final String APP_NAME="PicIn";
+    public static final String APP_NAME="GirlsGallery";
 
     /**
      * 图片的默认缓存位置
      */
     public static final String DEFAULT_SAVE_IMAGE_PATH=
-            Environment.getExternalStorageState()
+            Environment.getExternalStorageDirectory().getAbsolutePath()
                     + File.separator
                     +APP_NAME
                     +File.separator
-                    +"image"
-                    +File.separator;
+                    +"image";
     /**
      * 文件的默认缓存位置
      */
     public static final String DEFAULT_SAVE_FILE_PATH=
-            Environment.getExternalStorageState()
+            Environment.getExternalStorageDirectory().getAbsolutePath()
             +File.separator
             +APP_NAME
             +File.separator
-            +"file"
-            +File.separator;
+            +"file";
     /**
      * app运行的log信息
      */
     public static final String DEFAULT_SAVE_LOG_PAHT=
-            Environment.getExternalStorageState()
+            Environment.getExternalStorageDirectory().getAbsolutePath()
             +File.separator
             +APP_NAME
             +File.separator
-            +"log"
-            +File.separator;
+            +"log";
 }

@@ -6,6 +6,8 @@ import android.os.Environment;
 import com.lichunjing.picturegirls.configure.AppConfig;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * 文件操作相关的工具类
@@ -13,7 +15,8 @@ import java.io.File;
  */
 public class FileUtils {
 
-    public static final String LOG_NAME="AppLog.log";
+    public static final String LOG_NAME="AppLog.txt";
+
 
     /**
      * 返回存储log信息的文件
@@ -23,11 +26,34 @@ public class FileUtils {
         if(!isMounted()){
             return null;
         }
-        File logFile=new File(AppConfig.DEFAULT_SAVE_LOG_PAHT,LOG_NAME);
+        File logFilePath=new File(AppConfig.DEFAULT_SAVE_LOG_PAHT);
+        if(!logFilePath.exists()){
+            logFilePath.mkdirs();
+        }
+        File logFile=new File(logFilePath.getAbsolutePath()+File.separator+LOG_NAME);
         if(!logFile.exists()){
-            logFile.mkdirs();
+            try {
+                logFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return logFile;
+    }
+
+    /**
+     * 获得缓存图片的文件
+     * @return
+     */
+    public static final File getImageCacheFile(){
+        if(!isMounted()){
+            return null;
+        }
+        File imageCacheFile=new File(AppConfig.DEFAULT_SAVE_IMAGE_PATH);
+        if(!imageCacheFile.exists()){
+            imageCacheFile.mkdirs();
+        }
+        return  imageCacheFile;
     }
 
     /**

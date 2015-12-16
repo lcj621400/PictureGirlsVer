@@ -13,6 +13,7 @@ import com.lichunjing.picturegirls.ui.gallery.fragment.JellyViewPagerFragment;
 import com.lichunjing.picturegirls.ui.gallery.fragment.ViewPagerBaseFragment;
 import com.lichunjing.picturegirls.ui.gallery.fragment.ViewPagerFragment;
 import com.lichunjing.picturegirls.widget.jellyViewPager.JellyViewPager;
+import com.squareup.picasso.Picasso;
 
 /**
  * 1、JellyViewPager显示所有的图片
@@ -85,5 +86,11 @@ public class GirlGalleryActivity extends BasePicActivity {
 
     private void setFragment(Fragment fragment){
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Picasso.with(this).cancelTag(this);
+        super.onDestroy();
     }
 }
