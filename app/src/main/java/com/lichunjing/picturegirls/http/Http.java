@@ -19,8 +19,8 @@ public class Http {
      * @param pageSize 每页返回的数据量
      * @param callback 回调接口
      */
-    public static  void getCoverList(int page, int pageSize, ResultCallback<GirlListBean> callback){
-        String url=String.format(PicUrl.GET_IMAGE_URL,new Object[]{page+"",pageSize+""});
+    public static  void getCoverList(int id,int page, int pageSize, ResultCallback<GirlListBean> callback){
+        String url=String.format(PicUrl.GET_IMAGE_URL,new Object[]{id+"",page+"",pageSize+""});
         Log.d("url",url);
 //        url="http://www.tngou.net/tnfs/api/list?id=1&page=1&rows=20";
         new OkHttpRequest.Builder().url(url).get(callback);

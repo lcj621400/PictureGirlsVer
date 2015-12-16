@@ -13,7 +13,7 @@ public class PicUrl {
     /**
      * 获取封面列表信息
      */
-    public static final String GET_IMAGE_URL="http://www.tngou.net/tnfs/api/list?id=1&page=%s&rows=%s";
+    public static final String GET_IMAGE_URL="http://www.tngou.net/tnfs/api/list?id=%s&page=%s&rows=%s";
 
     /**
      * 获取此分类下，此封面图集的列表信息

@@ -41,7 +41,7 @@ public class ViewPagerBaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         datas=new ArrayList<>();
-        viewPagerAdapter=new GirlViewPagerAdapter(getActivity(),datas);
+        viewPagerAdapter=new GirlViewPagerAdapter(this,datas);
         if(getArguments()!=null) {
             id = getArguments().getInt(ID_PARAMS);
         }
@@ -91,13 +91,13 @@ public class ViewPagerBaseFragment extends Fragment {
     public class  GirlViewPagerAdapter extends PagerAdapter{
 
         private List<GirlGalleryBean> datas;
-        private Context context;
+        private Fragment fragment;
         private LayoutInflater inflater;
 
-        public GirlViewPagerAdapter(Context context,List<GirlGalleryBean> datas){
-            this.context=context;
+        public GirlViewPagerAdapter(Fragment fragment,List<GirlGalleryBean> datas){
+            this.fragment=fragment;
             this.datas=datas;
-            inflater=LayoutInflater.from(context);
+            inflater=LayoutInflater.from(fragment.getActivity());
         }
 
 
@@ -117,7 +117,7 @@ public class ViewPagerBaseFragment extends Fragment {
             View view=inflater.inflate(R.layout.viewpager_pic_item,null);
             ImageView imageView= (ImageView) view.findViewById(R.id.imageview);
             String url=PicUrl.BASE_IMAGE_URL+datas.get(position).getSrc();
-            Glide.with(context).load(url).into(imageView);
+            Glide.with(fragment).load(url).into(imageView);
             container.addView(view);
             return view;
         }

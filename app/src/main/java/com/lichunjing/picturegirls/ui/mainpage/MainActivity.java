@@ -4,7 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
@@ -36,6 +41,7 @@ import com.lichunjing.picturegirls.bean.cover.GirlListBean;
 import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.ui.gallery.GirlGalleryActivity;
+import com.lichunjing.picturegirls.ui.mainpage.fragment.MainFragment;
 import com.squareup.okhttp.Request;
 import com.squareup.picasso.Picasso;
 import com.zhy.http.okhttp.callback.ResultCallback;
@@ -46,55 +52,24 @@ import java.util.List;
 public class MainActivity extends BasePicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private XRecyclerView mRecycleview;
-    private MainAdapter recycleViewAdapter;
-    private List<String> recycleDatas;
-    private List<GirlCoverBean> picDatas;
-    private int page=1;
-    private int pageCoun=20;
+    private static final String[] TAB_TITLE={"性感美女","韩日美女","丝袜美腿","美女照片","美女写真","清纯美女","性感车模"};
+    private static final int[] TAB_ID={1,2,3,4,5,6,7};
 
-    private int loadCount=0;
+    private ViewPager mViewPager;
+    private MainViewPagerAdapter mViewPagerAdapter;
+    private TabLayout indicator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPicDatas(0);
     }
 
-    @Override
-    protected void init(Bundle savedInstanceState) {
-        super.init(savedInstanceState);
-        picDatas=new ArrayList<>();
-    }
 
     @Override
     protected void initEvent() {
         super.initEvent();
 
-        mRecycleview.setLoadingMoreEnabled(true);
-        mRecycleview.setPullRefreshEnabled(true);
-        mRecycleview.setLoadingListener(new XRecyclerView.LoadingListener() {
-            @Override
-            public void onRefresh() {
-                page=1;
-                getPicDatas(0);
-            }
 
-            @Override
-            public void onLoadMore() {
-                 getPicDatas(1);
-            }
-    });
-        mRecycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
 
 
     }
@@ -102,76 +77,9 @@ public class MainActivity extends BasePicActivity
     @Override
     protected void initStatus() {
         super.initStatus();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycleview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-        recycleDatas=new ArrayList<>();
-        recycleDatas.addAll(getDatas());
-        recycleViewAdapter=new MainAdapter(this,picDatas);
-        mRecycleview.setAdapter(recycleViewAdapter);
-        mRecycleview.setItemAnimator(new DefaultItemAnimator());
-        recycleViewAdapter.setOnItemClickListener(new MainAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                int id=picDatas.get(position).getId();
-                Intent intent=new Intent(MainActivity.this, GirlGalleryActivity.class);
-                intent.putExtra(GirlGalleryActivity.GALLERY_ID,id);
-                startActivity(intent);
-            }
-        });
-
-    }
-    private void getPicDatas(final int type){
-        Http.getCoverList(page, pageCoun, new ResultCallback<GirlListBean>() {
-            @Override
-            public void onError(Request request, Exception e) {
-                Log.d("error",e.toString());
-                mRecycleview.loadMoreComplete();
-                mRecycleview.refreshComplete();
-            }
-
-            @Override
-            public void onResponse(GirlListBean response) {
-                String s=response.toString();
-                Log.d("success",s);
-                mRecycleview.loadMoreComplete();
-                mRecycleview.refreshComplete();
-                if(response!=null){
-                    List<GirlCoverBean> datas = response.getTngou();
-                    if(datas==null&&datas.isEmpty()){
-                        return;
-                    }
-                    if(type==0){
-                        page=2;
-                        picDatas.clear();
-                        picDatas.addAll(datas);
-                        recycleViewAdapter.refreshNotify();
-                    }else if(type==1){
-                        picDatas.addAll(datas);
-                        recycleViewAdapter.loadMoreNotify();
-                        page++;
-                    }
-                    if(response.getTotal()==picDatas.size()){
-                        mRecycleview.noMoreLoading();
-                    }
-                }
-            }
-        });
     }
 
-    private List<String> getDatas() {
-        String url = "http://img.xiami.net/images/artistlogo/71/14371074393671.jpg";
-        String url2="http://pic.yesky.com/uploadImages/2015/306/41/XD187USUJTU8.jpg";
-        List<String> datas=new ArrayList<>();
-        for(int i = 0;i<20;i++) {
-            if(i%2==0){
-                datas.add(url2);
-            }else{
-                datas.add(url);
-            }
-        }
-        return  datas;
-    }
+
 
     @Override
     protected void initViews() {
@@ -189,9 +97,11 @@ public class MainActivity extends BasePicActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mRecycleview= (XRecyclerView) findViewById(R.id.main_recycleview);
-
-
+        mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
+        indicator = (TabLayout) findViewById(R.id.indicator);
+        mViewPagerAdapter=new MainViewPagerAdapter(getSupportFragmentManager(),TAB_ID,TAB_TITLE);
+        mViewPager.setAdapter(mViewPagerAdapter);
+        indicator.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -260,121 +170,29 @@ public class MainActivity extends BasePicActivity
         return true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Picasso.with(this).resumeTag(this);
-    }
+    private class MainViewPagerAdapter extends FragmentPagerAdapter{
 
-    @Override
-    protected void onDestroy() {
-        Picasso.with(this).cancelTag(this);
-        super.onDestroy();
-    }
-
-    public static class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> implements View.OnClickListener{
-
-        private Context context;
-        private List<GirlCoverBean> images;
-        private int lastPosition=-1;
-        private List<int[]> size=new ArrayList<int[]>();
-        private OnItemClickListener mOnItemClickListener;
-        private int screenWidth;
-        private int screenHeight;
-
-        public MainAdapter(Context context,List<GirlCoverBean> datas){
-            this.context=context;
-            images=datas;
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            screenWidth=displayMetrics.widthPixels;
-            screenHeight=displayMetrics.heightPixels;
-        }
-        interface OnItemClickListener{
-            void onClick(View view, int position);
+        private int[] id;
+        private String[] title;
+        public MainViewPagerAdapter(FragmentManager fm,int[] id,String[] title) {
+            super(fm);
+            this.id=id;
+            this.title=title;
         }
 
         @Override
-        public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view= LayoutInflater.from(context).inflate(R.layout.main_recycleview_item,null);
-
-            return new MainViewHolder(view);
+        public Fragment getItem(int position) {
+            return MainFragment.newInstance(id[position]);
         }
 
         @Override
-        public void onBindViewHolder(MainViewHolder holder, int position) {
-            GirlCoverBean girlBean = images.get(position);
-            holder.mainTitle.setText(girlBean.getTitle()+"");
-            String img=girlBean.getImg();
-            String url=null;
-            if(!TextUtils.isEmpty(img)){
-                url= PicUrl.BASE_IMAGE_URL+img;
-                int width=0;
-                int height=0;
-                if(position<size.size()){
-                    int[] sizes = size.get(position);
-                    height=sizes[1];
-                    width=sizes[0];
-                }else{
-                    double result=0;
-                    final double random = Math.random();
-                    if(random>0.5){
-                        result=random-0.5;
-                    }else{
-                        result=random-0.2;
-                    }
-                    height= (int) (screenHeight/3+ result*(screenHeight/3));
-                    width= (int) (screenWidth/2+result*(screenWidth/2));
-                    size.add(new int[]{width,height});
-                }
-                ViewGroup.LayoutParams params=new ViewGroup.LayoutParams(width,height);
-                holder.mainCard.setLayoutParams(params);
-                Glide.with(context).load(url).override(width,height).into(holder.mainImageview);
-            }
-            if(position>lastPosition){
-                Animation animation = AnimationUtils.loadAnimation(context, R.anim.main_item_bottom_in);
-                holder.mainCard.startAnimation(animation);
-                lastPosition=position;
-            }
-            holder.mainCard.setOnClickListener(this);
-            holder.mainCard.setTag(position);
+        public int getCount() {
+            return id.length;
         }
 
         @Override
-        public int getItemCount() {
-            return images.size();
-        }
-
-        public void setOnItemClickListener(OnItemClickListener listener){
-            this.mOnItemClickListener=listener;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if(mOnItemClickListener!=null){
-                mOnItemClickListener.onClick(v, (Integer) v.getTag());
-            }
-        }
-
-        public void refreshNotify(){
-            size.clear();
-            lastPosition=-1;
-            notifyDataSetChanged();
-        }
-
-        public void loadMoreNotify(){
-            notifyDataSetChanged();
-        }
-
-        public class MainViewHolder extends RecyclerView.ViewHolder{
-            CardView mainCard;
-            ImageView mainImageview;
-            TextView mainTitle;
-            public MainViewHolder(View itemView) {
-                super(itemView);
-                mainCard= (CardView) itemView.findViewById(R.id.cardview);
-                mainImageview= (ImageView) itemView.findViewById(R.id.main_imageview);
-                mainTitle= (TextView) itemView.findViewById(R.id.main_title);
-            }
+        public CharSequence getPageTitle(int position) {
+            return title[position];
         }
     }
 
