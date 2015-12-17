@@ -2,18 +2,15 @@ package com.lichunjing.picturegirls.ui.gallery;
 
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
-import com.lichunjing.picturegirls.ui.gallery.fragment.JellyViewPagerFragment;
-import com.lichunjing.picturegirls.ui.gallery.fragment.ViewPagerBaseFragment;
-import com.lichunjing.picturegirls.ui.gallery.fragment.ViewPagerFragment;
-import com.lichunjing.picturegirls.widget.jellyViewPager.JellyViewPager;
-import com.squareup.picasso.Picasso;
+import com.lichunjing.picturegirls.ui.gallery.fragment.recycleviewfragment.RecycleViewFragment;
+import com.lichunjing.picturegirls.ui.gallery.fragment.viewpagerfragment.JellyViewPagerFragment;
+import com.lichunjing.picturegirls.ui.gallery.fragment.viewpagerfragment.ViewPagerFragment;
 
 /**
  * 1、JellyViewPager显示所有的图片
@@ -23,10 +20,11 @@ public class GirlGalleryActivity extends BasePicActivity {
 
     private  int id;
     public static final String GALLERY_ID="gallery_id";
-    private RelativeLayout backLayout;
+    private LinearLayout backLayout;
 
     private ViewPagerFragment viewPagerFragment;
     private JellyViewPagerFragment jellyViewPagerFragment;
+    private RecycleViewFragment recycleViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +36,13 @@ public class GirlGalleryActivity extends BasePicActivity {
         if(getIntent()!=null){
             id=getIntent().getIntExtra(GALLERY_ID,0);
         }
-        setFragment(getViewPagerFragment());
+        setFragment(getRecycleViewFragment());
     }
 
     @Override
     protected void initViews() {
         super.initViews();
-        backLayout= (RelativeLayout) findViewById(R.id.backLayout);
+        backLayout= (LinearLayout) findViewById(R.id.backLayout);
         int a=(int)(Math.random()*100)+90;
         int r=(int)(Math.random()*255);
         int g=(int)(Math.random()*255);
@@ -84,13 +82,16 @@ public class GirlGalleryActivity extends BasePicActivity {
         return jellyViewPagerFragment;
     }
 
+    private Fragment getRecycleViewFragment(){
+        if(recycleViewFragment==null){
+            recycleViewFragment= (RecycleViewFragment) RecycleViewFragment.getInstance(id);
+        }
+        return recycleViewFragment;
+    }
+
     private void setFragment(Fragment fragment){
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
     }
 
-    @Override
-    protected void onDestroy() {
-        Picasso.with(this).cancelTag(this);
-        super.onDestroy();
-    }
+
 }

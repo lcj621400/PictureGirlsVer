@@ -16,6 +16,7 @@ import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.cover.GirlCoverBean;
 import com.lichunjing.picturegirls.bean.cover.GirlListBean;
 import com.lichunjing.picturegirls.http.Http;
+import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
 import com.lichunjing.picturegirls.ui.gallery.GirlGalleryActivity;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.callback.ResultCallback;
@@ -24,8 +25,11 @@ import java.util.List;
 
 
 public class MainFragment extends MainBaseFragment {
-    protected XRecyclerView mRecycleview;
+    private XRecyclerView mRecycleview;
+    private View mFragmentView;
 
+    //是否第一次可见
+    private boolean isFirstVisible=true;
 
     public MainFragment() {
         // Required empty public constructor
@@ -41,26 +45,38 @@ public class MainFragment extends MainBaseFragment {
     }
 
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        //防止fragment预加载数据，创建fragment时，只创建一个空的fragment，当fragment显示在屏幕上时，加载数据
+        if(isVisibleToUser&&isFirstVisible){
+            isFirstVisible=false;
+            getPicDatas(0);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_main, container, false);
-        initRecycleView(view);
-        return view;
+        if(mFragmentView==null) {
+            mFragmentView = inflater.inflate(R.layout.fragment_main, container, false);
+            initRecycleView(mFragmentView);
+        }
+        return mFragmentView;
     }
 
     private void initRecycleView(View view){
         mRecycleview= (XRecyclerView) view.findViewById(R.id.main_recycleview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
         mRecycleview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         mRecycleview.setAdapter(recycleViewAdapter);
         mRecycleview.setItemAnimator(new DefaultItemAnimator());
         mRecycleview.setLoadingMoreEnabled(true);
         mRecycleview.setPullRefreshEnabled(true);
-        recycleViewAdapter.setOnItemClickListener(new MainAdapter.OnItemClickListener() {
+        recycleViewAdapter.setOnItemClickListener(new OnRecycleViewItemClickListener() {
             @Override
             public void onClick(View view, int position) {
                 int id=picDatas.get(position).getId();
@@ -86,7 +102,7 @@ public class MainFragment extends MainBaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getPicDatas(0);
+
     }
 
     private void getPicDatas(final int type){
@@ -125,5 +141,14 @@ public class MainFragment extends MainBaseFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //viewpager销毁fragment时，存储fragment中加载的view,当再创建此fragment时，直接加载此view，防止fragment创建销毁，创建和销毁view，因为会频繁请求网络，导致页面卡顿
+        if(mFragmentView!=null){
+            ((ViewGroup)mFragmentView.getParent()).removeView(mFragmentView);
+        }
     }
 }

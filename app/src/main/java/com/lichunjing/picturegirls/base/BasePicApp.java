@@ -4,10 +4,14 @@ import android.app.Application;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.integration.okhttp.OkHttpUrlLoader;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.lichunjing.picturegirls.configure.AppException;
+import com.squareup.okhttp.OkHttpClient;
 import com.zhy.http.okhttp.OkHttpClientManager;
 
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,9 +29,13 @@ public class BasePicApp extends Application{
         super.onCreate();
         instance=this;
         initUnCatchException();
+        initGlide();
     }
 
 
+    public void initGlide(){
+        Glide.get(this).register(GlideUrl.class, InputStream.class,new OkHttpUrlLoader.Factory(new OkHttpClient()));
+    }
     /**
      * 设置处理未捕获的异常
      */

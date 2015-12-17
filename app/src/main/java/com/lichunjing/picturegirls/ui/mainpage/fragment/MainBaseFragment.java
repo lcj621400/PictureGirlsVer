@@ -1,6 +1,5 @@
 package com.lichunjing.picturegirls.ui.mainpage.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.cover.GirlCoverBean;
-import com.lichunjing.picturegirls.bean.cover.GirlListBean;
-import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.http.PicUrl;
-import com.squareup.okhttp.Request;
-import com.zhy.http.okhttp.callback.ResultCallback;
+import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +58,7 @@ public class MainBaseFragment extends Fragment{
         private List<GirlCoverBean> images;
         private int lastPosition=-1;
         private List<int[]> size=new ArrayList<int[]>();
-        private OnItemClickListener mOnItemClickListener;
+        private OnRecycleViewItemClickListener mOnItemClickListener;
         private int screenWidth;
         private int screenHeight;
 
@@ -75,9 +69,7 @@ public class MainBaseFragment extends Fragment{
             screenWidth=displayMetrics.widthPixels;
             screenHeight=displayMetrics.heightPixels;
         }
-        public interface OnItemClickListener{
-            void onClick(View view, int position);
-        }
+
 
         @Override
         public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -112,8 +104,16 @@ public class MainBaseFragment extends Fragment{
 //                    width= (int) (screenWidth/2+result*(screenWidth/2));
 //                    size.add(new int[]{width,height});
 //                }
-                height= screenHeight/3;
                 width= screenWidth/2;
+                if(position%2==0){
+                    height= screenHeight/3+50;
+                }else if(position%3==0){
+                    height=screenHeight/3-50;
+                }else if(position%5==0){
+                    height=screenHeight/3+30;
+                } else{
+                    height=screenHeight/3;
+                }
                 ViewGroup.LayoutParams params=new ViewGroup.LayoutParams(width,height);
                 holder.mainCard.setLayoutParams(params);
                 Glide.with(fragment).load(url).override(width,height).into(holder.mainImageview);
@@ -132,7 +132,7 @@ public class MainBaseFragment extends Fragment{
             return images.size();
         }
 
-        public void setOnItemClickListener(OnItemClickListener listener){
+        public void setOnItemClickListener(OnRecycleViewItemClickListener listener){
             this.mOnItemClickListener=listener;
         }
 

@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.gallery.fragment.viewpagerfragment.ViewPagerFragment">
+    tools:context="com.lichunjing.picturegirls.ui.gallery.fragment.RecycleViewFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gallery_recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-         />
+        />
 
 </FrameLayout>

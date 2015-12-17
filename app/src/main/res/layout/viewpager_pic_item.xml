@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:layout_gravity="center"
         android:id="@+id/imageview"
         android:layout_width="match_parent"
         android:scaleType="fitCenter"

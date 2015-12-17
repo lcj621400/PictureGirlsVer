@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
+import android.widget.Toast;
 
 import com.lichunjing.picturegirls.base.BasePicApp;
 import com.lichunjing.picturegirls.manager.AppManager;
@@ -48,12 +49,14 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        if(handleException(ex)&&mDefaultHandler!=null){
-            System.exit(0);
+        if(handleException(ex)){
+
         }else{
             //如果用户没有处理则让系统默认的异常处理器来处理
-            mDefaultHandler.uncaughtException(thread, ex);
+//            mDefaultHandler.uncaughtException(thread, ex);
         }
+        System.exit(0);
+
     }
 
     /**
@@ -81,6 +84,7 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
                         super.run();
                         Looper.prepare();
                         //弹出对话框，提示用户，程序发生异常，将要关闭
+//                        Toast.makeText(currentActivity,"程序开个小差，马上要离开下",Toast.LENGTH_LONG).show();
                         showExitDialog(currentActivity);
                         Looper.loop();
                     }

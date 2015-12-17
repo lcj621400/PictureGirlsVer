@@ -1,4 +1,4 @@
-package com.lichunjing.picturegirls.ui.gallery.fragment;
+package com.lichunjing.picturegirls.ui.gallery.fragment.viewpagerfragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -19,14 +19,15 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        android:src="@mipmap/ic_launcher"/>
+        />
     <TextView
         android:layout_alignParentBottom="true"
         android:id="@+id/main_title"
-        android:text="美女"
+
+        android:textSize="12sp"
         android:textColor="#e7277a"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </RelativeLayout>
 </android.support.v7.widget.CardView>
