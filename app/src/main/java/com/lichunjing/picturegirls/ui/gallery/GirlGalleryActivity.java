@@ -1,8 +1,11 @@
 package com.lichunjing.picturegirls.ui.gallery;
 
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -48,9 +51,17 @@ public class GirlGalleryActivity extends BasePicActivity {
         int g=(int)(Math.random()*255);
         int b=(int)(Math.random()*255);
         int color= Color.argb(a,r,g,b);
-        backLayout.setBackgroundColor(color);
-        findViewById(R.id.viewpager_type).setOnClickListener(this);
-        findViewById(R.id.jellyviewpager_type).setOnClickListener(this);
+        backLayout.setBackgroundColor(getResources().getColor(R.color.background));
+
+
+        initToolBar("写真", true, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        FloatingActionButton floatingActionButton = initFloatActionButton(null);
+        floatingActionButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -59,17 +70,29 @@ public class GirlGalleryActivity extends BasePicActivity {
     }
 
     @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        switch (v.getId()){
-            case R.id.viewpager_type:
-                setFragment(getViewPagerFragment());
-                break;
-            case R.id.jellyviewpager_type:
-                setFragment(getJellyViewPagerFragment());
-                break;
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.gallery_menu,menu);
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.gallery:
+                setFragment(getRecycleViewFragment());
+                return true;
+            case R.id.viewpager_gallery:
+                setFragment(getViewPagerFragment());
+                return true;
+            case R.id.jelly_gallery:
+                setFragment(getJellyViewPagerFragment());
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private Fragment getViewPagerFragment(){
         if(viewPagerFragment==null){
             viewPagerFragment= (ViewPagerFragment) ViewPagerFragment.newInstance(id);

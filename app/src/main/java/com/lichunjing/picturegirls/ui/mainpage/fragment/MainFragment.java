@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lichunjing.picturegirls.R;
@@ -18,6 +19,7 @@ import com.lichunjing.picturegirls.bean.cover.GirlListBean;
 import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
 import com.lichunjing.picturegirls.ui.gallery.GirlGalleryActivity;
+import com.lichunjing.picturegirls.widget.LoadOrErrorLayout;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.callback.ResultCallback;
 
@@ -27,6 +29,7 @@ import java.util.List;
 public class MainFragment extends MainBaseFragment {
     private XRecyclerView mRecycleview;
     private View mFragmentView;
+    private LoadOrErrorLayout loadOrErrorLayout;
 
     //是否第一次可见
     private boolean isFirstVisible=true;
@@ -51,7 +54,8 @@ public class MainFragment extends MainBaseFragment {
         //防止fragment预加载数据，创建fragment时，只创建一个空的fragment，当fragment显示在屏幕上时，加载数据
         if(isVisibleToUser&&isFirstVisible){
             isFirstVisible=false;
-            getPicDatas(0);
+//            getPicDatas(0);
+
         }
     }
 
@@ -62,6 +66,7 @@ public class MainFragment extends MainBaseFragment {
         if(mFragmentView==null) {
             mFragmentView = inflater.inflate(R.layout.fragment_main, container, false);
             initRecycleView(mFragmentView);
+            loadOrErrorLayout= (LoadOrErrorLayout) mFragmentView.findViewById(R.id.load_error_layout);
         }
         return mFragmentView;
     }
@@ -102,7 +107,12 @@ public class MainFragment extends MainBaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+//        loadOrErrorLayout.showErrorLayout(R.drawable.ym_head, "加载服务器数据出错", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getActivity().getApplicationContext(),"点击了重试按钮",Toast.LENGTH_LONG).show();
+//            }
+//        });
     }
 
     private void getPicDatas(final int type){
@@ -145,10 +155,13 @@ public class MainFragment extends MainBaseFragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         //viewpager销毁fragment时，存储fragment中加载的view,当再创建此fragment时，直接加载此view，防止fragment创建销毁，创建和销毁view，因为会频繁请求网络，导致页面卡顿
         if(mFragmentView!=null){
-            ((ViewGroup)mFragmentView.getParent()).removeView(mFragmentView);
+            ViewGroup parentView=((ViewGroup)mFragmentView.getParent());
+            if(parentView!=null) {
+                parentView.removeView(mFragmentView);
+            }
         }
+        super.onDestroy();
     }
 }

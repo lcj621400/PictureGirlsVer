@@ -5,10 +5,15 @@
     tools:context=".ui.mainpage.fragment.MainFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <com.jcodecraeer.xrecyclerview.XRecyclerView
-        android:id="@+id/main_recycleview"
+    <com.lichunjing.picturegirls.widget.LoadOrErrorLayout
+        android:id="@+id/load_error_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
+        android:layout_height="match_parent">
+        <com.jcodecraeer.xrecyclerview.XRecyclerView
+            android:id="@+id/main_recycleview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.lichunjing.picturegirls.widget.LoadOrErrorLayout>
+
 
 </FrameLayout>

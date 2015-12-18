@@ -1,13 +1,17 @@
 package com.lichunjing.picturegirls.base;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
+import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.manager.AppManager;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +29,7 @@ public abstract class BasePicActivity extends AppCompatActivity implements View.
     protected int mScreenWidth;
     protected int mScreenHeiht;
 
-
+    protected AlertDialog loadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,19 +78,53 @@ public abstract class BasePicActivity extends AppCompatActivity implements View.
     public abstract int getLayout();
 
     /**
+     * 初始化toolbar
+     * @param title
+     * @return
+     */
+    protected Toolbar initToolBar(String title,boolean showDefaultBack,View.OnClickListener backListener){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(title);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        if(showDefaultBack) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(backListener);
+        }
+        return toolbar;
+    }
+
+    /**
+     * 初始化floatactionbutton
+     * @param listener
+     * @return
+     */
+    protected FloatingActionButton initFloatActionButton(View.OnClickListener listener){
+        FloatingActionButton  mFloatButton = (FloatingActionButton) findViewById(R.id.float_button);
+        if(listener!=null)
+        mFloatButton.setOnClickListener(listener);
+        return mFloatButton;
+    }
+    /**
      * 显示耗时操作的对话框
      * @param message 显示的信息
      */
     protected void showLoadingDialog(@NonNull String message){
-
+        if(loadingDialog==null){
+            loadingDialog=new AlertDialog.Builder(this).setMessage(message).setTitle("提示").show();
+        }else{
+            loadingDialog.show();
+        }
     }
 
     /**
      * 隐藏对话框，可以设置消失提示消失
-     * @param message
      */
-    protected void dissLoadingDialog(final String message){
-
+    protected void dissLoadingDialog(){
+        if(loadingDialog!=null){
+            loadingDialog.dismiss();
+        }
     }
 
     protected void showToast(@NonNull String message){

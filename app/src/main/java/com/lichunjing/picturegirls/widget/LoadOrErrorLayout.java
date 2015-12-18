@@ -66,12 +66,11 @@ public class LoadOrErrorLayout extends RelativeLayout{
     }
 
     public LoadOrErrorLayout(Context context) {
-        super(context);
+        this(context,null,-1);
     }
 
     public LoadOrErrorLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context,attrs);
+        this(context, attrs,-1);
     }
 
     public LoadOrErrorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -97,9 +96,7 @@ public class LoadOrErrorLayout extends RelativeLayout{
             LayoutParams errorNetWorkLayoutParams=new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             errorNetWorkLayout.setGravity(Gravity.CENTER);
             errorNetWorkLayout.setOrientation(LinearLayout.VERTICAL);
-            if(errorNetWorkListener!=null){
-                errorNetWorkLayout.setOnClickListener(errorNetWorkListener);
-            }
+
             //网络错误的图片
             errorNetWorkImageView=new ImageView(mContext);
             LinearLayout.LayoutParams errorNetWorkImageParams=new LinearLayout.LayoutParams(dpToPx(100),dpToPx(100));
@@ -153,12 +150,15 @@ public class LoadOrErrorLayout extends RelativeLayout{
             errorRefreshButton=new Button(mContext);
             LinearLayout.LayoutParams errorNetWorkRefreshParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,dpToPx(30));
             errorNetWorkRefreshParams.topMargin=30;
-            errorRefreshButton.setText("点击屏幕刷新");
+            errorRefreshButton.setText("点击按钮刷新");
             errorRefreshButton.setBackgroundColor(Color.BLUE);
             errorRefreshButton.setGravity(Gravity.CENTER);
             errorRefreshButton.setPadding(0,0,0,0);
             errorRefreshButton.setTextColor(Color.WHITE);
             errorRefreshButton.setTextSize(dpToPx(5));
+            if(errorNetWorkListener!=null){
+                errorRefreshButton.setOnClickListener(errorNetWorkListener);
+            }
 
             errorNetWorkLayout.addView(errorRefreshButton,errorNetWorkRefreshParams);
 
@@ -183,9 +183,7 @@ public class LoadOrErrorLayout extends RelativeLayout{
             LayoutParams errorLayoutParams=new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             errorLayout.setOrientation(LinearLayout.VERTICAL);
             errorLayout.setGravity(Gravity.CENTER);
-            if(errorListener!=null){
-                errorLayout.setOnClickListener(errorListener);
-            }
+
 
             //创建错误的imageivew
             errorImage=new ImageView(mContext);
@@ -212,8 +210,10 @@ public class LoadOrErrorLayout extends RelativeLayout{
 
             //点击充值按钮
             errorButton=new Button(mContext);
-            errorButton.setText("点击屏幕重试");
-
+            errorButton.setText("点击按钮重试");
+            if(errorListener!=null){
+                errorButton.setOnClickListener(errorListener);
+            }
             errorButton.setTextSize(dpToPx(5));
             errorButton.setBackgroundColor(Color.BLUE);
             errorButton.setTextColor(Color.WHITE);
@@ -245,7 +245,7 @@ public class LoadOrErrorLayout extends RelativeLayout{
             LayoutParams loadingLayoutParams=new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             loadingLayout.setGravity(Gravity.CENTER);
 
-             loadingBar=new ProgressBar(mContext);
+            loadingBar=new ProgressBar(mContext);
             LinearLayout.LayoutParams loadingBarParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 
             loadingLayout.addView(loadingBar,loadingBarParams);

@@ -35,7 +35,14 @@
             android:name="com.lichunjing.picturegirls.configure.GlideSetting"
             android:value="GlideModule" />
 
-        <activity android:name=".ui.gallery.GalleryDetialActivity"
+        <activity
+            android:name=".ui.gallery.GalleryDetialActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

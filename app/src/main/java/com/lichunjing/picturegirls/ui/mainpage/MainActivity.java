@@ -1,5 +1,6 @@
 package com.lichunjing.picturegirls.ui.mainpage;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
+import com.lichunjing.picturegirls.ui.AboutActivity;
+import com.lichunjing.picturegirls.ui.SettingsActivity;
 import com.lichunjing.picturegirls.ui.mainpage.fragment.MainFragment;
 
 public class MainActivity extends BasePicActivity
@@ -31,7 +34,6 @@ public class MainActivity extends BasePicActivity
     private ViewPager mViewPager;
     private MainViewPagerAdapter mViewPagerAdapter;
     private TabLayout indicator;
-    private FloatingActionButton mFloatButton;
 
     private long lastBackPressTime = 0;
 
@@ -57,10 +59,13 @@ public class MainActivity extends BasePicActivity
     @Override
     protected void initViews() {
         super.initViews();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle("写真");
+        Toolbar toolbar=initToolBar("美女写真",false,null);
+        FloatingActionButton faButton=initFloatActionButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -70,13 +75,7 @@ public class MainActivity extends BasePicActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mFloatButton = (FloatingActionButton) findViewById(R.id.float_button);
-        mFloatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(mViewPager, "大家好，我是SnackBar", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+
 
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         indicator = (TabLayout) findViewById(R.id.indicator);
@@ -84,6 +83,8 @@ public class MainActivity extends BasePicActivity
         mViewPager.setAdapter(mViewPagerAdapter);
         indicator.setupWithViewPager(mViewPager);
     }
+
+
 
     @Override
     public int getLayout() {
@@ -147,9 +148,9 @@ public class MainActivity extends BasePicActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_about) {
-
+            startActivity(new Intent(this, AboutActivity.class));
         } else if (id == R.id.nav_setting) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
