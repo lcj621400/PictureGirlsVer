@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.gallery.GirlGalleryBean;
@@ -21,8 +22,10 @@ import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.ui.gallery.GalleryDetialActivity;
 import com.lichunjing.picturegirls.widget.jellyViewPager.JellyViewPager;
 import com.squareup.okhttp.Request;
-import com.zhy.http.okhttp.callback.ResultCallback;
+import com.squareup.okhttp.Response;
+import com.zhy.http.okhttp.callback.Callback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +62,14 @@ public class ViewPagerBaseFragment extends Fragment {
 
 
     protected void getDatas(final int type, final ViewPager viewPager){
-        Http.getGalleryImages(id, new ResultCallback<GirlPictureBean>() {
+        Http.getGalleryImages(id, new Callback<GirlPictureBean>() {
+            @Override
+            public GirlPictureBean parseNetworkResponse(Response response) throws IOException {
+                String json=response.body().toString();
+                GirlPictureBean girlPictureBean = JSON.parseObject(json, GirlPictureBean.class);
+                return girlPictureBean;
+            }
+
             @Override
             public void onError(Request request, Exception e) {
 
@@ -70,13 +80,14 @@ public class ViewPagerBaseFragment extends Fragment {
                 if(response!=null){
                     final List<GirlGalleryBean> list = response.getList();
                     if(list!=null&&!list.isEmpty()){
-                       datas.addAll(list);
+                        datas.addAll(list);
                         viewPagerAdapter.notifyDataSetChanged();
                         if(type==1) viewPager.setAdapter(viewPagerAdapter);
                     }
                 }
             }
         });
+
     }
 
 

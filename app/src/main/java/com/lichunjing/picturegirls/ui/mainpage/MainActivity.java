@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
+import com.lichunjing.picturegirls.network.NetStatusUtils;
 import com.lichunjing.picturegirls.ui.AboutActivity;
 import com.lichunjing.picturegirls.ui.SettingsActivity;
 import com.lichunjing.picturegirls.ui.mainpage.fragment.MainFragment;
@@ -36,25 +37,6 @@ public class MainActivity extends BasePicActivity
     private TabLayout indicator;
 
     private long lastBackPressTime = 0;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
-    @Override
-    protected void initEvent() {
-        super.initEvent();
-
-
-    }
-
-    @Override
-    protected void initStatus() {
-        super.initStatus();
-    }
-
 
     @Override
     protected void initViews() {
@@ -106,6 +88,19 @@ public class MainActivity extends BasePicActivity
             }
         }
     }
+
+    @Override
+    protected void onNetConnectedFocus(String mesaage) {
+        super.onNetConnectedFocus(mesaage);
+        showToastShort(mesaage);
+    }
+
+    @Override
+    protected void onNetDisConnectedFocus() {
+        super.onNetDisConnectedFocus();
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

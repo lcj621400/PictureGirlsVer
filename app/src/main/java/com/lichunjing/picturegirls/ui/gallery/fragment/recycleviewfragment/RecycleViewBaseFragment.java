@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebView;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.gallery.GirlGalleryBean;
@@ -26,8 +25,10 @@ import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
 import com.lichunjing.picturegirls.ui.gallery.GalleryDetialActivity;
 import com.squareup.okhttp.Request;
-import com.zhy.http.okhttp.callback.ResultCallback;
+import com.squareup.okhttp.Response;
+import com.zhy.http.okhttp.callback.Callback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +93,14 @@ public abstract class RecycleViewBaseFragment extends Fragment {
     }
 
     protected void getDatas(){
-        Http.getGalleryImages(id, new ResultCallback<GirlPictureBean>() {
+        Http.getGalleryImages(id, new Callback<GirlPictureBean>() {
+            @Override
+            public GirlPictureBean parseNetworkResponse(Response response) throws IOException {
+                String json=response.body().toString();
+                GirlPictureBean girlPictureBean = JSON.parseObject(json, GirlPictureBean.class);
+                return girlPictureBean;
+            }
+
             @Override
             public void onError(Request request, Exception e) {
 
@@ -109,6 +117,7 @@ public abstract class RecycleViewBaseFragment extends Fragment {
                 }
             }
         });
+
     }
 
     public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.RecycleViewViewHolder>implements View.OnClickListener{
@@ -150,6 +159,12 @@ public abstract class RecycleViewBaseFragment extends Fragment {
                 holder.cardview.startAnimation(animation);
                 lastPosition=position;
             }
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(RecycleViewViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            holder.cardview.clearAnimation();
         }
 
         @Override

@@ -63,20 +63,20 @@ public class SettingsActivity extends BasePicActivity {
     }
 
     private void clearCache(){
-        FileUtils.clearGlideDefaultCache(this);
         new Thread(){
             @Override
             public void run() {
                 super.run();
-                final boolean success = FileUtils.clearCache();
+                final boolean result=FileUtils.clearCustomGlideCache(mApplication);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        dissLoadingDialog();
-                        if(success){
+                        dMissLoadingDialog();
+                        if(result){
                             getCacheSize();
-                        }else{
-                            showToast("清楚缓存失败");
+                            showToastShort("清除缓存成功");
+                        }else {
+                            showToastShort("清除缓存失败");
                         }
                     }
                 });
@@ -90,7 +90,7 @@ public class SettingsActivity extends BasePicActivity {
             @Override
             public void run() {
                 super.run();
-                final String imageCacheSize = FileUtils.getImageCacheSize(mApplication);
+                final String imageCacheSize = FileUtils.getGlideCustomCacheSize(mApplication);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -117,4 +117,6 @@ public class SettingsActivity extends BasePicActivity {
             confirmDialog.show();
         }
     }
+
+
 }

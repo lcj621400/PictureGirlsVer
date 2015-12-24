@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.base.BasePicActivity;
+import com.lichunjing.picturegirls.network.NetStatusUtils;
 import com.lichunjing.picturegirls.ui.gallery.fragment.recycleviewfragment.RecycleViewFragment;
 import com.lichunjing.picturegirls.ui.gallery.fragment.viewpagerfragment.JellyViewPagerFragment;
 import com.lichunjing.picturegirls.ui.gallery.fragment.viewpagerfragment.ViewPagerFragment;
@@ -92,6 +93,11 @@ public class GirlGalleryActivity extends BasePicActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onNetConnectedFocus(String message) {
+        super.onNetConnectedFocus(message);
+        showToastShort(TAG+":连接网络");
+    }
 
     private Fragment getViewPagerFragment(){
         if(viewPagerFragment==null){

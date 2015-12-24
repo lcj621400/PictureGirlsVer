@@ -27,53 +27,51 @@ import java.util.List;
 /**
  * Created by lcj621400 on 2015/12/15.
  */
-public class MainBaseFragment extends Fragment{
+public class MainBaseFragment extends Fragment {
 
 
-    protected static final String TYPE_ID="type_id";
-    protected int id=1;
+    protected static final String TYPE_ID = "type_id";
+    protected int id = 1;
 
     protected MainAdapter recycleViewAdapter;
     protected List<GirlCoverBean> picDatas;
-    protected int page=1;
-    protected int pageCount=10;
+    protected int page = 1;
+    protected int pageCount = 10;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!=null){
-            id=getArguments().getInt(TYPE_ID,1);
+        if (getArguments() != null) {
+            id = getArguments().getInt(TYPE_ID, 1);
         }
-        picDatas=new ArrayList<>();
-        recycleViewAdapter=new MainAdapter(this,picDatas);
+        picDatas = new ArrayList<>();
+        recycleViewAdapter = new MainAdapter(this, picDatas);
     }
 
 
-
-
-    public static class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> implements View.OnClickListener{
+    public static class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> implements View.OnClickListener {
 
         private Fragment fragment;
         private List<GirlCoverBean> images;
-        private int lastPosition=-1;
-        private List<int[]> size=new ArrayList<int[]>();
+        private int lastPosition = -1;
+        private List<int[]> size = new ArrayList<int[]>();
         private OnRecycleViewItemClickListener mOnItemClickListener;
         private int screenWidth;
         private int screenHeight;
 
-        public MainAdapter(Fragment fragment,List<GirlCoverBean> datas){
-            this.fragment=fragment;
-            images=datas;
+        public MainAdapter(Fragment fragment, List<GirlCoverBean> datas) {
+            this.fragment = fragment;
+            images = datas;
             DisplayMetrics displayMetrics = fragment.getActivity().getResources().getDisplayMetrics();
-            screenWidth=displayMetrics.widthPixels;
-            screenHeight=displayMetrics.heightPixels;
+            screenWidth = displayMetrics.widthPixels;
+            screenHeight = displayMetrics.heightPixels;
         }
 
 
         @Override
         public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view= LayoutInflater.from(fragment.getActivity()).inflate(R.layout.main_recycleview_item,null);
+            View view = LayoutInflater.from(fragment.getActivity()).inflate(R.layout.main_recycleview_item, null);
 
             return new MainViewHolder(view);
         }
@@ -81,50 +79,47 @@ public class MainBaseFragment extends Fragment{
         @Override
         public void onBindViewHolder(MainViewHolder holder, int position) {
             GirlCoverBean girlBean = images.get(position);
-            holder.mainTitle.setText(girlBean.getTitle()+"");
-            String img=girlBean.getImg();
-            String url=null;
-            if(!TextUtils.isEmpty(img)){
-                url= PicUrl.BASE_IMAGE_URL+img;
-                int width=0;
-                int height=0;
-//                if(position<size.size()){
-//                    int[] sizes = size.get(position);
-//                    height=sizes[1];
-//                    width=sizes[0];
-//                }else{
-//                    double result=0;
-//                    final double random = Math.random();
-//                    if(random>0.5){
-//                        result=random-0.5;
-//                    }else{
-//                        result=random-0.2;
-//                    }
-//                    height= (int) (screenHeight/3+ result*(screenHeight/3));
-//                    width= (int) (screenWidth/2+result*(screenWidth/2));
-//                    size.add(new int[]{width,height});
-//                }
-                width= screenWidth/2;
-                if(position%2==0){
-                    height= screenHeight/3+50;
-                }else if(position%3==0){
-                    height=screenHeight/3-50;
-                }else if(position%5==0){
-                    height=screenHeight/3+30;
-                } else{
-                    height=screenHeight/3;
+            holder.mainTitle.setText(girlBean.getTitle() + "");
+            int width = 0;
+            int height = 0;
+            if (position < size.size()) {
+                int[] sizes = size.get(position);
+                height = sizes[1];
+                width = sizes[0];
+            } else {
+                width = screenWidth / 2;
+                if (position % 2 == 0) {
+                    height = screenHeight / 3 + 50;
+                } else if (position % 3 == 0) {
+                    height = screenHeight / 3 - 50;
+                } else if (position % 5 == 0) {
+                    height = screenHeight / 3 + 30;
+                } else {
+                    height = screenHeight / 3;
                 }
-                ViewGroup.LayoutParams params=new ViewGroup.LayoutParams(width,height);
-                holder.mainCard.setLayoutParams(params);
-                Glide.with(fragment).load(url).override(width,height).into(holder.mainImageview);
+                size.add(new int[]{width,height});
             }
-            if(position>lastPosition){
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(width, height);
+            holder.mainCard.setLayoutParams(params);
+            String img = girlBean.getImg();
+            String url = null;
+            if (!TextUtils.isEmpty(img)) {
+                url = PicUrl.BASE_IMAGE_URL + img;
+                Glide.with(fragment).load(url).override(width, height).into(holder.mainImageview);
+            }
+            if (position > lastPosition) {
                 Animation animation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.main_item_bottom_in);
                 holder.mainCard.startAnimation(animation);
-                lastPosition=position;
+                lastPosition = position;
             }
             holder.mainCard.setOnClickListener(this);
             holder.mainCard.setTag(position);
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(MainViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            holder.mainCard.clearAnimation();
         }
 
         @Override
@@ -132,36 +127,37 @@ public class MainBaseFragment extends Fragment{
             return images.size();
         }
 
-        public void setOnItemClickListener(OnRecycleViewItemClickListener listener){
-            this.mOnItemClickListener=listener;
+        public void setOnItemClickListener(OnRecycleViewItemClickListener listener) {
+            this.mOnItemClickListener = listener;
         }
 
         @Override
         public void onClick(View v) {
-            if(mOnItemClickListener!=null){
+            if (mOnItemClickListener != null) {
                 mOnItemClickListener.onClick(v, (Integer) v.getTag());
             }
         }
 
-        public void refreshNotify(){
+        public void refreshNotify() {
             size.clear();
-            lastPosition=-1;
+            lastPosition = -1;
             notifyDataSetChanged();
         }
 
-        public void loadMoreNotify(){
+        public void loadMoreNotify() {
             notifyDataSetChanged();
         }
 
-        public class MainViewHolder extends RecyclerView.ViewHolder{
+        public class MainViewHolder extends RecyclerView.ViewHolder {
             CardView mainCard;
             ImageView mainImageview;
             TextView mainTitle;
+
             public MainViewHolder(View itemView) {
                 super(itemView);
-                mainCard= (CardView) itemView.findViewById(R.id.cardview);
-                mainImageview= (ImageView) itemView.findViewById(R.id.main_imageview);
-                mainTitle= (TextView) itemView.findViewById(R.id.main_title);
+                mainCard = (CardView) itemView.findViewById(R.id.cardview);
+                mainImageview = (ImageView) itemView.findViewById(R.id.main_imageview);
+                mainTitle = (TextView) itemView.findViewById(R.id.main_title);
             }
         }
     }

@@ -2,7 +2,6 @@ package com.lichunjing.picturegirls.ui.mainpage.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,26 +9,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.cover.GirlCoverBean;
 import com.lichunjing.picturegirls.bean.cover.GirlListBean;
+import com.lichunjing.picturegirls.http.GirlListCallback;
 import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
 import com.lichunjing.picturegirls.ui.gallery.GirlGalleryActivity;
-import com.lichunjing.picturegirls.widget.LoadOrErrorLayout;
 import com.squareup.okhttp.Request;
-import com.zhy.http.okhttp.callback.ResultCallback;
+import com.squareup.okhttp.Response;
+import com.zhy.http.okhttp.callback.Callback;
 
+import java.io.IOException;
 import java.util.List;
 
 
 public class MainFragment extends MainBaseFragment {
     private XRecyclerView mRecycleview;
     private View mFragmentView;
-    private LoadOrErrorLayout loadOrErrorLayout;
 
     //是否第一次可见
     private boolean isFirstVisible=true;
@@ -48,13 +49,14 @@ public class MainFragment extends MainBaseFragment {
     }
 
 
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         //防止fragment预加载数据，创建fragment时，只创建一个空的fragment，当fragment显示在屏幕上时，加载数据
         if(isVisibleToUser&&isFirstVisible){
             isFirstVisible=false;
-//            getPicDatas(0);
+            getPicDatas(0);
 
         }
     }
@@ -66,7 +68,6 @@ public class MainFragment extends MainBaseFragment {
         if(mFragmentView==null) {
             mFragmentView = inflater.inflate(R.layout.fragment_main, container, false);
             initRecycleView(mFragmentView);
-            loadOrErrorLayout= (LoadOrErrorLayout) mFragmentView.findViewById(R.id.load_error_layout);
         }
         return mFragmentView;
     }
@@ -81,6 +82,8 @@ public class MainFragment extends MainBaseFragment {
         mRecycleview.setItemAnimator(new DefaultItemAnimator());
         mRecycleview.setLoadingMoreEnabled(true);
         mRecycleview.setPullRefreshEnabled(true);
+        mRecycleview.setRefreshProgressStyle(ProgressStyle.BallScale);
+        mRecycleview.setLaodingMoreProgressStyle(ProgressStyle.LineScale);
         recycleViewAdapter.setOnItemClickListener(new OnRecycleViewItemClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -104,19 +107,16 @@ public class MainFragment extends MainBaseFragment {
         });
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-//        loadOrErrorLayout.showErrorLayout(R.drawable.ym_head, "加载服务器数据出错", new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(getActivity().getApplicationContext(),"点击了重试按钮",Toast.LENGTH_LONG).show();
-//            }
-//        });
-    }
 
     private void getPicDatas(final int type){
-        Http.getCoverList(id,page, pageCount, new ResultCallback<GirlListBean>() {
+        Http.getCoverList(id, page, pageCount, new Callback<GirlListBean>() {
+            @Override
+            public GirlListBean parseNetworkResponse(Response response) throws IOException {
+                String json=response.body().toString();
+                Log.d("lcj",json);
+                GirlListBean bean = JSON.parseObject(json, GirlListBean.class);
+                return bean;
+            }
             @Override
             public void onError(Request request, Exception e) {
                 Log.d("error",e.toString());
@@ -151,6 +151,7 @@ public class MainFragment extends MainBaseFragment {
                 }
             }
         });
+
     }
 
     @Override

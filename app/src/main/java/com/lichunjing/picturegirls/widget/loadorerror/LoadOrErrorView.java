@@ -1,4 +1,4 @@
-package com.lichunjing.picturegirls.widget;
+package com.lichunjing.picturegirls.widget.loadorerror;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -21,7 +21,7 @@ import android.widget.TextView;
  * Created by lcj621400 on 2015/11/23.
  * 内有四个页面：网络错误（提供点击事件），加载出错，加载中，数据为空
  */
-public class LoadOrErrorLayout extends RelativeLayout{
+public class LoadOrErrorView extends RelativeLayout{
 
     //上下文对象
     private Context mContext;
@@ -65,27 +65,27 @@ public class LoadOrErrorLayout extends RelativeLayout{
         LOADING,ERROR,EMPTY,NORMAL;
     }
 
-    public LoadOrErrorLayout(Context context) {
+    public LoadOrErrorView(Context context) {
         this(context,null,-1);
     }
 
-    public LoadOrErrorLayout(Context context, AttributeSet attrs) {
+    public LoadOrErrorView(Context context, AttributeSet attrs) {
         this(context, attrs,-1);
     }
 
-    public LoadOrErrorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LoadOrErrorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context,attrs);
+        init(context);
     }
 
-    private void init(Context context,AttributeSet attrs){
+    private void init(Context context){
         this.mContext=context;
         layoutHeight=getHeight();
         layoutWidth=getWidth();
     }
 
     //显示没有网络的布局
-    public void showErrorNetWorkLayout(@NonNull int errorNetWordImageRes,@NonNull String errorNetWrokMessage,OnClickListener errorNetWorkListener){
+    public void showErrorNetWorkView(@NonNull int errorNetWordImageRes,@NonNull String errorNetWrokMessage){
         hideAllChild();
         if(errorNetWorkLayout==null){
             errorNetWorkLayout=new LinearLayout(mContext);
@@ -117,51 +117,6 @@ public class LoadOrErrorLayout extends RelativeLayout{
             errorNetWorkMessageTextView.setText(errorNetWrokMessage);
             errorNetWorkLayout.addView(errorNetWorkMessageTextView, errorNetWorkTextParams);
 
-
-            //点击会跳转到设置网络的页面
-            errorNetWorkButton=new Button(mContext);
-            LinearLayout.LayoutParams errorNetWorkButtonParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,dpToPx(30));
-            errorNetWorkButton.setText("设置网络");
-            errorNetWorkButton.setTextSize(dpToPx(5));
-            errorNetWorkButton.setBackgroundColor(Color.BLUE);
-            errorNetWorkButton.setTextColor(Color.WHITE);
-            errorNetWorkButton.setGravity(Gravity.CENTER);
-            errorNetWorkButton.setPadding(0,0,0,0);
-            errorNetWorkButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //系统版本大于3.0
-                    if(Build.VERSION.SDK_INT>10){
-                        Intent netWorkIntent=new Intent(Settings.ACTION_SETTINGS);
-                        mContext.startActivity(netWorkIntent);
-                    }else{
-                        Intent setNetWorkIntent=new Intent();
-                        ComponentName name=new ComponentName("com.android.settings","com.android.settings.Settings");
-                        setNetWorkIntent.setComponent(name);
-                        setNetWorkIntent.setAction("android.intent.action.VIEW");
-                        mContext.startActivity(setNetWorkIntent);
-                    }
-                }
-            });
-            errorNetWorkLayout.addView(errorNetWorkButton, errorNetWorkButtonParams);
-
-
-            //点击会刷新
-            errorRefreshButton=new Button(mContext);
-            LinearLayout.LayoutParams errorNetWorkRefreshParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,dpToPx(30));
-            errorNetWorkRefreshParams.topMargin=30;
-            errorRefreshButton.setText("点击按钮刷新");
-            errorRefreshButton.setBackgroundColor(Color.BLUE);
-            errorRefreshButton.setGravity(Gravity.CENTER);
-            errorRefreshButton.setPadding(0,0,0,0);
-            errorRefreshButton.setTextColor(Color.WHITE);
-            errorRefreshButton.setTextSize(dpToPx(5));
-            if(errorNetWorkListener!=null){
-                errorRefreshButton.setOnClickListener(errorNetWorkListener);
-            }
-
-            errorNetWorkLayout.addView(errorRefreshButton,errorNetWorkRefreshParams);
-
             this.addView(errorNetWorkLayout,errorNetWorkLayoutParams);
 
         }else{
@@ -171,7 +126,7 @@ public class LoadOrErrorLayout extends RelativeLayout{
 
 
     //显示加载错误的layout
-    public void showErrorLayout(@NonNull int errorImageRes,@NonNull String errorMessage,OnClickListener errorListener){
+    public void showLoadErrorView(@NonNull int errorImageRes,@NonNull String errorMessage,OnClickListener errorListener){
         hideAllChild();
         if(errorLayout==null){
            //实例化错误布局
@@ -233,7 +188,7 @@ public class LoadOrErrorLayout extends RelativeLayout{
     }
 
     //显示正在加载的layout
-    public void showLoadingLayout(){
+    public void showLoadingView(){
         hideAllChild();
         if(loadingLayout==null){
             loadingLayout=new LinearLayout(mContext);
@@ -258,7 +213,7 @@ public class LoadOrErrorLayout extends RelativeLayout{
     }
 
     //显示数据为空的layout
-    public  void showEmptyLayout(@NonNull int emptyImageRes,@NonNull String emptyMessage){
+    public  void showEmptyView(@NonNull int emptyImageRes,@NonNull String emptyMessage){
         hideAllChild();
         if(emptyLayout==null){
             emptyLayout=new LinearLayout(mContext);
@@ -300,28 +255,9 @@ public class LoadOrErrorLayout extends RelativeLayout{
         }
     }
 
-    //加载数据成功时，执行此方法显示
-    public  void showContent(){
-        int count=getChildCount();
-        for(int i=0;i<count;i++){
-            View view=getChildAt(i);
-            Object obj=view.getTag();
-            if(obj!=null){
-                int tag= (int) obj;
-                if(tag==loadingLayoutTag||tag==errorLayoutTag||tag==errorNetWorkLayoutTag||tag==emptyLayoutTag){
-                    view.setVisibility(View.GONE);
-                }else{
-                    view.setVisibility(View.VISIBLE);
-                }
-            }else {
-                view.setVisibility(View.VISIBLE);
-            }
-
-        }
+    public void showNormalView(){
+        hideAllChild();
     }
-
-
-
     private void hideAllChild(){
         int count=getChildCount();
         for(int i=0;i<count;i++){
