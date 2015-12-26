@@ -96,7 +96,7 @@ public abstract class RecycleViewBaseFragment extends Fragment {
         Http.getGalleryImages(id, new Callback<GirlPictureBean>() {
             @Override
             public GirlPictureBean parseNetworkResponse(Response response) throws IOException {
-                String json=response.body().toString();
+                String json=response.body().string();
                 GirlPictureBean girlPictureBean = JSON.parseObject(json, GirlPictureBean.class);
                 return girlPictureBean;
             }

@@ -8,6 +8,9 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.configure.AppException;
 import com.lichunjing.picturegirls.widget.loadorerror.LoadOrErrorHelper;
+import com.orhanobut.logger.AndroidLogTool;
+import com.orhanobut.logger.LogLevel;
+import com.orhanobut.logger.Logger;
 import com.squareup.okhttp.OkHttpClient;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -32,10 +35,24 @@ public class BasePicApp extends Application{
         initGlide();
         initLoadOrErrorArgs();
         initOkHttp();
+        initLogger();
     }
 
+    /**
+     * 初始化logger打印信息，在真是版本需要设置logLevel(LogLevel.NONE)关闭log信息
+     */
+    private void initLogger(){
+        Logger.init("L-C-J").hideThreadInfo().logLevel(LogLevel.FULL).methodCount(2).methodOffset(2).logTool(new AndroidLogTool());
+    }
+
+    /**
+     * 初始化okhttp配置信息
+     */
     private void initOkHttp() {
         OkHttpClient okHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
+        okHttpClient.setConnectTimeout(15,TimeUnit.MINUTES);
+        okHttpClient.setReadTimeout(15,TimeUnit.MINUTES);
+        okHttpClient.setWriteTimeout(15,TimeUnit.MINUTES);
     }
 
     /**

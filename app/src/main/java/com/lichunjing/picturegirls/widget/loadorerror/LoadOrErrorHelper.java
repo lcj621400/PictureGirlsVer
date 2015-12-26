@@ -49,79 +49,90 @@ public class LoadOrErrorHelper {
         this.emptyMessage=message;
         return this;
     }
-    private LoadOrErrorView check(ViewGroup viewGroup, int loadOrErrorViewId){
+
+
+    public void showNetWorkError(ViewGroup viewGroup, LoadOrErrorView errorView){
         int count=viewGroup.getChildCount();
         if(count==0){
             throw new IllegalArgumentException("ViewGroup 没有子View");
         }
-        View view=viewGroup.findViewById(loadOrErrorViewId);
-        if(view==null){
-            throw new IllegalArgumentException("ViewGroup 没有Id为 "+loadOrErrorViewId+" 的子View");
+        if(errorView==null){
+            throw new IllegalArgumentException("LoadOrErrorView 为空");
         }
-        if(!(view instanceof LoadOrErrorView)){
-            throw new IllegalArgumentException("Id为 "+loadOrErrorViewId+" 的子View必须是LoadOrErrorView或是其子类");
-        }
-        LoadOrErrorView loadOrErrorView= (LoadOrErrorView) view;
-        return loadOrErrorView;
-    }
-
-    public void showNetWorkError(ViewGroup viewGroup, int loadOrErrorViewId){
-        int count=viewGroup.getChildCount();
-        LoadOrErrorView loadOrErrorView=check(viewGroup,loadOrErrorViewId);
-        loadOrErrorView.showErrorNetWorkView(netWorkErrorDrawable,netWorkErrorMessage);
+        errorView.showErrorNetWorkView(netWorkErrorDrawable,netWorkErrorMessage);
         for(int i=0;i<count;i++){
             View v=viewGroup.getChildAt(i);
-            if(v.getId()==View.NO_ID||v.getId()!=loadOrErrorViewId){
+            if(v!=errorView){
                 v.setVisibility(View.GONE);
             }
         }
     }
 
-    public void showLoadError(ViewGroup viewGroup,int loadOrErrorViewId,View.OnClickListener listener){
+    public void showLoadError(ViewGroup viewGroup,LoadOrErrorView errorView,View.OnClickListener listener){
         int count=viewGroup.getChildCount();
-        LoadOrErrorView loadOrErrorView=check(viewGroup,loadOrErrorViewId);
-        loadOrErrorView.showLoadErrorView(loadErrorDrawable,loadErrorMessage,listener);
+        if(count==0){
+            throw new IllegalArgumentException("ViewGroup 没有子View");
+        }
+        if(errorView==null){
+            throw new IllegalArgumentException("LoadOrErrorView 为空");
+        }
+        errorView.showLoadErrorView(loadErrorDrawable,loadErrorMessage,listener);
         for(int i=0;i<count;i++){
             View v=viewGroup.getChildAt(i);
-            if(v.getId()==View.NO_ID||v.getId()!=loadOrErrorViewId){
+            if(v!=errorView){
                 v.setVisibility(View.GONE);
             }
         }
     }
 
-    public void showLoading(ViewGroup viewGroup,int loadOrErrorViewId){
+    public void showLoading(ViewGroup viewGroup,LoadOrErrorView errorView){
         int count=viewGroup.getChildCount();
-        LoadOrErrorView loadOrErrorView=check(viewGroup,loadOrErrorViewId);
-        loadOrErrorView.showLoadingView();
+        if(count==0){
+            throw new IllegalArgumentException("ViewGroup 没有子View");
+        }
+        if(errorView==null){
+            throw new IllegalArgumentException("LoadOrErrorView 为空");
+        }
+        errorView.showLoadingView();
         for(int i=0;i<count;i++){
             View v=viewGroup.getChildAt(i);
-            if(v.getId()==View.NO_ID||v.getId()!=loadOrErrorViewId){
+            if(v!=errorView){
                 v.setVisibility(View.GONE);
             }
         }
     }
 
-    public void showEmpty(ViewGroup viewGroup,int loadOrErrorViewId){
+    public void showEmpty(ViewGroup viewGroup,LoadOrErrorView errorView){
         int count=viewGroup.getChildCount();
-        LoadOrErrorView loadOrErrorView=check(viewGroup,loadOrErrorViewId);
-        loadOrErrorView.showEmptyView(emptyDrawable,emptyMessage);
+        if(count==0){
+            throw new IllegalArgumentException("ViewGroup 没有子View");
+        }
+        if(errorView==null){
+            throw new IllegalArgumentException("LoadOrErrorView 为空");
+        }
+        errorView.showEmptyView(emptyDrawable,emptyMessage);
         for(int i=0;i<count;i++){
             View v=viewGroup.getChildAt(i);
-            if(v.getId()==View.NO_ID||v.getId()!=loadOrErrorViewId){
+            if(v!=errorView){
                 v.setVisibility(View.GONE);
             }
         }
     }
 
-    public void showNormal(ViewGroup viewGroup,int loadOrErrorViewId){
+    public void showNormal(ViewGroup viewGroup,LoadOrErrorView errorView){
         int count=viewGroup.getChildCount();
-        check(viewGroup,loadOrErrorViewId);
+        if(count==0){
+            throw new IllegalArgumentException("ViewGroup 没有子View");
+        }
+        if(errorView==null){
+            throw new IllegalArgumentException("LoadOrErrorView 为空");
+        }
         for(int i=0;i<count;i++){
             View v=viewGroup.getChildAt(i);
-            if(v.getId()!=loadOrErrorViewId){
+            if(v==errorView){
+                v.setVisibility(View.GONE);
+            }else{
                 v.setVisibility(View.VISIBLE);
-            }else {
-                v.setVisibility(View.GONE);
             }
         }
     }

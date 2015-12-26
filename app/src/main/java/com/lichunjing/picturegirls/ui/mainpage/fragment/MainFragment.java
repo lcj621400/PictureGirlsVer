@@ -112,7 +112,7 @@ public class MainFragment extends MainBaseFragment {
         Http.getCoverList(id, page, pageCount, new Callback<GirlListBean>() {
             @Override
             public GirlListBean parseNetworkResponse(Response response) throws IOException {
-                String json=response.body().toString();
+                String json=response.body().string();
                 Log.d("lcj",json);
                 GirlListBean bean = JSON.parseObject(json, GirlListBean.class);
                 return bean;
