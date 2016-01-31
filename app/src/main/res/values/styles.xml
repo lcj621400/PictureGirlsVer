@@ -20,13 +20,13 @@
 
     <style name="ActivityAnimationStyle" parent="@android:style/Animation.Activity">
         <!--activity还没有finish()下退出的效果-->
-        <item name="android:activityOpenExitAnimation">@anim/activity_out</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_outt</item>
         <!-- 新的activity创建进入效果 -->
-        <item name="android:activityOpenEnterAnimation">@anim/activity_in</item>
+        <item name="android:activityOpenEnterAnimation">@anim/activity_inn</item>
         <!-- 上一个 activity返回进入效果-->
-        <item name="android:activityCloseEnterAnimation">@anim/activity_in</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_inn</item>
         <!--activity finish()之后退出效果-->
-        <item name="android:activityCloseExitAnimation">@anim/activity_out</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_outt</item>
 
     </style>
 

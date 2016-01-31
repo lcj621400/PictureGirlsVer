@@ -281,6 +281,10 @@ public abstract class BasePicActivity extends AppCompatActivity implements View.
     }
 
 
+    /**
+     * 当前activity是否获得焦点
+     * @param hasFocus
+     */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -316,5 +320,10 @@ public abstract class BasePicActivity extends AppCompatActivity implements View.
      */
     public boolean isHasFocus() {
         return hasFocus;
+    }
+
+
+    protected void finishActivity(){
+        finish();
     }
 }

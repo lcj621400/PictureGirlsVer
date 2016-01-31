@@ -37,10 +37,10 @@ public class GalleryDetialActivity extends BasePicActivity {
         super.initViews();
         mCardView= (CardView) findViewById(R.id.cardview);
         mImageView= (PhotoView) findViewById(R.id.gallery_detial_imageview);
-        if(TextUtils.isEmpty(galleryUrl)) return;
+        if(!TextUtils.isEmpty(galleryUrl))
         Glide.with(this).load(galleryUrl).error(R.drawable.load_error).fitCenter().crossFade().into(mImageView);
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.gallery_detial_image_in);
-        mCardView.startAnimation(animation);
+//        Animation animation = AnimationUtils.loadAnimation(this, R.anim.gallery_detial_image_in);
+//        mCardView.startAnimation(animation);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.lichunjing.picturegirls.ui.mainpage.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,7 @@ import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.bean.cover.GirlCoverBean;
 import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
+import com.lichunjing.picturegirls.ui.mainpage.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +36,63 @@ public class MainBaseFragment extends Fragment {
     protected static final String TYPE_ID = "type_id";
     protected int id = 1;
 
+    /**
+     * recycleview
+     */
     protected MainAdapter recycleViewAdapter;
+    /**
+     * recycleview数据源
+     */
     protected List<GirlCoverBean> picDatas;
+    /**
+     * 当前的页码
+     */
     protected int page = 1;
     protected int pageCount = 10;
 
+    // 当前fragment是否可见
+    protected boolean isVisible;
+
+    /**
+     * activity实例
+     */
+    protected MainActivity activity;
+
+    /**
+     * 重写onAttach()方法，获取activity的实例
+     * @param context
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context!=null&&context instanceof MainActivity){
+            activity= (MainActivity) context;
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getUserVisibleHint()){
+            isVisible=true;
+            onVisible();
+        }else{
+            isVisible=false;
+            onInVisible();
+        }
+    }
+
+    private void onVisible(){
+        onLazyLoad();
+    }
+
+    private void onInVisible(){
+
+    }
+
+    protected void onLazyLoad(){
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,22 +105,24 @@ public class MainBaseFragment extends Fragment {
     }
 
 
+
     public static class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> implements View.OnClickListener {
 
         private Fragment fragment;
         private List<GirlCoverBean> images;
         private int lastPosition = -1;
-        private List<int[]> size = new ArrayList<int[]>();
+        private List<Integer> sizeHeight = new ArrayList<>();
+        private List<Integer> sizeWidth=new ArrayList<>();
         private OnRecycleViewItemClickListener mOnItemClickListener;
-        private int screenWidth;
         private int screenHeight;
+        private int screenWidth;
 
         public MainAdapter(Fragment fragment, List<GirlCoverBean> datas) {
             this.fragment = fragment;
             images = datas;
             DisplayMetrics displayMetrics = fragment.getActivity().getResources().getDisplayMetrics();
-            screenWidth = displayMetrics.widthPixels;
             screenHeight = displayMetrics.heightPixels;
+            screenWidth=displayMetrics.widthPixels;
         }
 
 
@@ -80,32 +137,35 @@ public class MainBaseFragment extends Fragment {
         public void onBindViewHolder(MainViewHolder holder, int position) {
             GirlCoverBean girlBean = images.get(position);
             holder.mainTitle.setText(girlBean.getTitle() + "");
-            int width = 0;
             int height = 0;
-            if (position < size.size()) {
-                int[] sizes = size.get(position);
-                height = sizes[1];
-                width = sizes[0];
-            } else {
-                width = screenWidth / 2;
-                if (position % 2 == 0) {
-                    height = screenHeight / 3 + 50;
-                } else if (position % 3 == 0) {
-                    height = screenHeight / 3 - 50;
-                } else if (position % 5 == 0) {
-                    height = screenHeight / 3 + 30;
-                } else {
-                    height = screenHeight / 3;
-                }
-                size.add(new int[]{width,height});
-            }
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(width, height);
-            holder.mainCard.setLayoutParams(params);
+            int width=0;
+//            if (position < sizeHeight.size()) {
+//                height = sizeHeight.get(position);
+//                width=sizeWidth.get(position);
+//            } else {
+//                if (position % 2 == 0) {
+//                    height = screenHeight / 3 + 50;
+//                } else if (position % 3 == 0) {
+//                    height = screenHeight / 3 - 50;
+//                } else if (position % 5 == 0) {
+//                    height = screenHeight / 3 + 30;
+//                } else {
+//                    height = screenHeight / 3;
+//                }
+//                sizeHeight.add(height);
+//                width=screenWidth/2;
+//                sizeWidth.add(width);
+//            }
+            width=screenWidth/2;
+            height=screenHeight/3;
+            ViewGroup.LayoutParams layoutParams =new ViewGroup.LayoutParams(width,height);
+            holder.mainCard.setLayoutParams(layoutParams);
+
             String img = girlBean.getImg();
             String url = null;
             if (!TextUtils.isEmpty(img)) {
                 url = PicUrl.BASE_IMAGE_URL + img;
-                Glide.with(fragment).load(url).override(width, height).into(holder.mainImageview);
+                Glide.with(fragment).load(url).into(holder.mainImageview);
             }
             if (position > lastPosition) {
                 Animation animation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.main_item_bottom_in);
@@ -139,7 +199,7 @@ public class MainBaseFragment extends Fragment {
         }
 
         public void refreshNotify() {
-            size.clear();
+            sizeHeight.clear();
             lastPosition = -1;
             notifyDataSetChanged();
         }

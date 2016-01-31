@@ -24,7 +24,11 @@ import com.lichunjing.picturegirls.base.BasePicActivity;
 import com.lichunjing.picturegirls.network.NetStatusUtils;
 import com.lichunjing.picturegirls.ui.AboutActivity;
 import com.lichunjing.picturegirls.ui.SettingsActivity;
+import com.lichunjing.picturegirls.ui.mainpage.fragment.MainBaseFragment;
 import com.lichunjing.picturegirls.ui.mainpage.fragment.MainFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BasePicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +38,7 @@ public class MainActivity extends BasePicActivity
 
     private ViewPager mViewPager;
     private MainViewPagerAdapter mViewPagerAdapter;
+    private List<MainFragment> fragments;
     private TabLayout indicator;
 
     private long lastBackPressTime = 0;
@@ -61,7 +66,11 @@ public class MainActivity extends BasePicActivity
 
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         indicator = (TabLayout) findViewById(R.id.indicator);
-        mViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager(), TAB_ID, TAB_TITLE);
+        fragments=new ArrayList<>();
+        for(int i=0;i<TAB_ID.length;i++){
+            fragments.add(MainFragment.newInstance(TAB_ID[i]));
+        }
+        mViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager(), TAB_TITLE,fragments);
         mViewPager.setAdapter(mViewPagerAdapter);
         indicator.setupWithViewPager(mViewPager);
     }
@@ -93,6 +102,7 @@ public class MainActivity extends BasePicActivity
     protected void onNetConnectedFocus(String mesaage) {
         super.onNetConnectedFocus(mesaage);
         showToastShort(mesaage);
+
     }
 
     @Override
@@ -155,23 +165,23 @@ public class MainActivity extends BasePicActivity
 
     private class MainViewPagerAdapter extends FragmentPagerAdapter {
 
-        private int[] id;
         private String[] title;
+        private List<MainFragment> fragments;
 
-        public MainViewPagerAdapter(FragmentManager fm, int[] id, String[] title) {
+        public MainViewPagerAdapter(FragmentManager fm, String[] title, List<MainFragment> fragments) {
             super(fm);
-            this.id = id;
             this.title = title;
+            this.fragments=fragments;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return MainFragment.newInstance(id[position]);
+            return fragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return id.length;
+            return title.length;
         }
 
         @Override

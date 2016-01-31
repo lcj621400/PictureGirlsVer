@@ -24,8 +24,6 @@ import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.interfacel.OnRecycleViewItemClickListener;
 import com.lichunjing.picturegirls.ui.gallery.GalleryDetialActivity;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.zhy.http.okhttp.callback.Callback;
 
 import java.io.IOException;
@@ -95,14 +93,14 @@ public abstract class RecycleViewBaseFragment extends Fragment {
     protected void getDatas(){
         Http.getGalleryImages(id, new Callback<GirlPictureBean>() {
             @Override
-            public GirlPictureBean parseNetworkResponse(Response response) throws IOException {
+            public GirlPictureBean parseNetworkResponse(okhttp3.Response response) throws IOException {
                 String json=response.body().string();
                 GirlPictureBean girlPictureBean = JSON.parseObject(json, GirlPictureBean.class);
                 return girlPictureBean;
             }
 
             @Override
-            public void onError(Request request, Exception e) {
+            public void onError(okhttp3.Request request, Exception e) {
 
             }
 

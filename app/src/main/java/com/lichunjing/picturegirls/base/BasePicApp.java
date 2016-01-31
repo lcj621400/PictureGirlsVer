@@ -2,20 +2,17 @@ package com.lichunjing.picturegirls.base;
 
 import android.app.Application;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp.OkHttpUrlLoader;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.configure.AppException;
 import com.lichunjing.picturegirls.widget.loadorerror.LoadOrErrorHelper;
 import com.orhanobut.logger.AndroidLogTool;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
-import com.squareup.okhttp.OkHttpClient;
 import com.zhy.http.okhttp.OkHttpUtils;
 
-import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Created by lcj621400 on 2015/12/11.
@@ -50,9 +47,9 @@ public class BasePicApp extends Application{
      */
     private void initOkHttp() {
         OkHttpClient okHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
-        okHttpClient.setConnectTimeout(15,TimeUnit.MINUTES);
-        okHttpClient.setReadTimeout(15,TimeUnit.MINUTES);
-        okHttpClient.setWriteTimeout(15,TimeUnit.MINUTES);
+        okHttpClient.newBuilder().connectTimeout(15,TimeUnit.MINUTES)
+                .readTimeout(15,TimeUnit.MINUTES)
+                .writeTimeout(15,TimeUnit.MINUTES);
     }
 
     /**
@@ -65,7 +62,7 @@ public class BasePicApp extends Application{
      * 设置glide使用okhttp
      */
     public void initGlide(){
-        Glide.get(this).register(GlideUrl.class, InputStream.class,new OkHttpUrlLoader.Factory(new OkHttpClient()));
+//        Glide.get(this).register(GlideUrl.class, InputStream.class,new OkHttpUrlLoader.Factory(new OkHttpClient.Builder().build());
     }
     /**
      * 设置处理未捕获的异常
