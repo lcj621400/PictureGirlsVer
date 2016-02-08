@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Cache;
+import okhttp3.Call;
 
 
 public class MainFragment extends MainBaseFragment {
@@ -187,11 +188,15 @@ public class MainFragment extends MainBaseFragment {
                 }
                 return bean;
             }
-            public void onError(okhttp3.Request request, Exception e) {
+
+            @Override
+            public void onError(Call call, Exception e) {
                 Log.d("error",e.toString());
                 mRecycleview.loadMoreComplete();
                 mRecycleview.refreshComplete();
             }
+
+
 
             @Override
             public void onResponse(GirlListBean response) {

@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+
 /**
  * Created by lcj621400 on 2015/12/15.
  */
@@ -69,9 +71,11 @@ public class ViewPagerBaseFragment extends Fragment {
             }
 
             @Override
-            public void onError(okhttp3.Request request, Exception e) {
+            public void onError(Call call, Exception e) {
 
             }
+
+
 
             @Override
             public void onResponse(GirlPictureBean response) {

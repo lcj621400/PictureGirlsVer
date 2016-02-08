@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+
 
 public abstract class RecycleViewBaseFragment extends Fragment {
     protected static final String ID_PARAMS="id_params";
@@ -100,9 +102,11 @@ public abstract class RecycleViewBaseFragment extends Fragment {
             }
 
             @Override
-            public void onError(okhttp3.Request request, Exception e) {
+            public void onError(Call call, Exception e) {
 
             }
+
+
 
             @Override
             public void onResponse(GirlPictureBean response) {
