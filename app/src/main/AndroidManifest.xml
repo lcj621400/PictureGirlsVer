@@ -72,6 +72,9 @@
         <!--设置页面-->
         <activity android:name=".ui.me.login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <!--新闻详情页面-->
+        <activity android:name=".ui.news.NewsDetialActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

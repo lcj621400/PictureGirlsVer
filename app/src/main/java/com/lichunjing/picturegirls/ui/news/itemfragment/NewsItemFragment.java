@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -134,7 +135,9 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
 
             @Override
             public void onError(Call call, Exception e) {
-
+                Log.d(TAG,e==null?"访问服务器出错":e.getMessage());
+                swipeToLoadLayout.setRefreshing(false);
+                swipeToLoadLayout.setLoadingMore(false);
             }
 
             @Override
