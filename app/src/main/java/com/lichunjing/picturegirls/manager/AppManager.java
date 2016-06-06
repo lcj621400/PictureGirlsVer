@@ -5,12 +5,13 @@ import android.app.Activity;
 import java.util.Stack;
 
 /**
+ * 应用管理里类，应用广利类
  * Created by lcj621400 on 2015/12/11.
  */
 public class AppManager {
 
     /**
-     * 存储activity的栈
+     * 存储activity的栈集合
      */
     private static Stack<Activity> activityStack;
     /**

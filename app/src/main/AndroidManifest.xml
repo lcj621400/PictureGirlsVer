@@ -11,41 +11,66 @@
 
 
     <application
-        android:name=".base.BasePicApp"
+        android:name=".baseui.BasePicApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--app首页-->
         <activity
-            android:name=".ui.mainpage.MainActivity"
+            android:name=".ui.mainview.AppMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <!--图片首页-->
+        <activity
+            android:name=".ui.pictures.mainpicture.MainActivity"
+            android:label="图册"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <!--欢迎页面-->
+        <activity
+            android:name=".ui.WelcomeActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--第一次启动展示页面-->
+
         <activity
-            android:name=".ui.LoadingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".ui.FirstStatActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+
+        <!--图片列表页面-->
         <activity
-            android:name=".ui.gallery.GirlGalleryActivity"
+            android:name=".ui.pictures.gallery.GirlGalleryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <!--配置glide使用okhttp-->
         <meta-data
-            android:name="com.lichunjing.picturegirls.configure.GlideSetting"
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule" />
 
+        <!--图片详情页面-->
         <activity
-            android:name=".ui.gallery.GalleryDetialActivity"
+            android:name=".ui.pictures.gallery.GalleryDetialActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <!--关于页面-->
         <activity
-            android:name=".ui.AboutActivity"
-            android:label="@string/title_activity_about"
+            android:name=".ui.me.setting.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.SettingsActivity"
+
+        <!--设置页面-->
+        <activity android:name=".ui.me.setting.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <!--设置页面-->
+        <activity android:name=".ui.me.login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

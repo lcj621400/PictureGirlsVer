@@ -19,4 +19,10 @@ public class PicUrl {
      * 获取此分类下，此封面图集的列表信息
      */
     public static final String GET_GALLERY_URL="http://www.tngou.net/tnfs/api/show?id=%s";
+
+
+    /**
+     * 获取某一分类下的新闻列表，用id分类
+     */
+    public static final String GET_NEWS_URL="http://www.tngou.net/api/top/list?id=%s&page=%s&rows=%s";
 }

@@ -4,14 +4,11 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.format.Formatter;
 
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.lichunjing.picturegirls.configure.AppConfig;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
 /**
  * 文件操作相关的工具类
@@ -63,42 +60,25 @@ public class FileUtils {
     }
 
     /**
-     * 此缓存为自定义的Glide缓存文件夹，为sd卡的cache缓存目录
-     * @param context
+     * 清除文件夹中的所有文件，可以是多级目录
      * @return
      */
-    public static String getGlideCustomCacheSize(Context context){
-        File cacheFile=context.getExternalCacheDir();
-        File glideCacheFile=new File(cacheFile, DiskCache.Factory.DEFAULT_DISK_CACHE_DIR);
-        if(!glideCacheFile.exists()){
-            return "0.00 B";
+    public static boolean deleteFiles(File firDir){
+        if(firDir==null){
+            return false;
         }
-        File[] files=glideCacheFile.listFiles();
-        long size=0;
-        for(File f:files){
-            if(f.exists()&&f.isFile()){
-                size+=f.length();
-            }
-        }
-        return Formatter.formatFileSize(context,size);
-    }
-
-    /**
-     * 清除自定义缓存
-     * @param context
-     * @return
-     */
-    public static boolean clearCustomGlideCache(Context context){
         try {
-            File cacheFile=context.getExternalCacheDir();
-            File glideCacheFile=new File(cacheFile, DiskCache.Factory.DEFAULT_DISK_CACHE_DIR);
-            if(!glideCacheFile.exists()){
-                return false;
+            if(firDir.isFile()){
+                return firDir.delete();
             }
-            File[] files=glideCacheFile.listFiles();
-            for(File f:files){
-                if(f.exists()&&f.isFile()){
-                    f.delete();
+            if(firDir.isDirectory()) {
+                File[] files = firDir.listFiles();
+                for (File f : files) {
+                    if (f.exists() && f.isFile()) {
+                        f.delete();
+                    }else {
+                        deleteFiles(f);
+                    }
                 }
             }
             return true;
@@ -109,8 +89,6 @@ public class FileUtils {
 
 
     /**
-     * 此缓存为app的内部存储的私有存储文件（此版本的Glide的bug，如果设置了新的存储路径，但Glide不会获得用户设置的缓存的位置的缓存）获取Glide默认的缓存目录的缓存大小：/data/data/com.lichunjing.picturein/cache/image
-     * 如果设置了自定义的目录缓存，则此缓存下没有缓存文件。（默认缓存会随app卸载，清理）
      * @return
      */
     public static final String getGlideDefaultCacheSize(Context context){

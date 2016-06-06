@@ -34,14 +34,21 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created by lcj621400 on 2016/1/6.
  */
+@Deprecated
 public class ACache {
+    // 超时
     public static final int TIME_HOUR = 60 * 60;
     public static final int TIME_DAY = TIME_HOUR * 24;
+    // 缓存大小最大值
     private static final int MAX_SIZE = 1000 * 1000 * 50; // 50 mb
+    // 缓存文件数量的最大值，默认为无限制
     private static final int MAX_COUNT = Integer.MAX_VALUE; // 不限制存放数据的数量
+    // 存储内存缓存的Map集合
     private static Map<String, ACache> mInstanceMap = new HashMap<String, ACache>();
+    // 缓存管理缓存
     private ACacheManager mCache;
 
+    // 构造方法，获取缓存
     public static ACache get(Context ctx) {
         return get(ctx, "ACache");
     }

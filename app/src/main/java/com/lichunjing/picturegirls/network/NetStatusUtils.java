@@ -1,11 +1,10 @@
 package com.lichunjing.picturegirls.network;
 
-import java.util.Locale;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
+
+import java.util.Locale;
 
 /**
  * 检查网络联机和连接类型的工具类
@@ -13,6 +12,7 @@ import android.net.NetworkInfo;
  * @author lcj621400
  *
  */
+@Deprecated
 public class NetStatusUtils {
 
 	/**

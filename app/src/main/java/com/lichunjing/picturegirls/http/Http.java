@@ -1,38 +1,46 @@
 package com.lichunjing.picturegirls.http;
 
-import android.util.Log;
-
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
 /**
  * Created by lcj621400 on 2015/12/12.
+ * 访问网络获取数据
  */
 public class Http {
 
 
     /**
-     * 获取封面列表信息
+     * 获取图片封面列表信息
      *
-     * @param page     页码
-     * @param pageSize 每页返回的数据量
      * @param callback 回调接口
      */
-    public static void getCoverList(int id, int page, int pageSize, Callback callback) {
-        String url = String.format(PicUrl.GET_IMAGE_URL, new Object[]{id + "", page + "", pageSize + ""});
-        Log.d("url", url);
-//        url="http://www.tngou.net/tnfs/api/list?id=1&page=1&rows=20";
+    public static void  getCoverList(Object object,String url, Callback callback) {
+        OkHttpUtils.get().url(url).tag(object).build().execute(callback);
+    }
+
+    public static void getCoverList(String url, Callback callback){
         OkHttpUtils.get().url(url).build().execute(callback);
     }
 
     /**
-     * 获取此封面下的图集的类表信息
+     * 获取此图册封面下的图集的类表信息
      *
-     * @param id
+     * @param id 要获取图片的id
      * @param callback
      */
-    public static void getGalleryImages(int id, Callback callback) {
-        String url = String.format(PicUrl.GET_GALLERY_URL, id + "");
-        OkHttpUtils.get().url(url).build().execute(callback);
+    public static void getGalleryImages(Object object,int id, Callback callback) {
+        String url = String.format(PicUrl.GET_GALLERY_URL, String.valueOf(id));
+        OkHttpUtils.get().url(url).tag(object).build().execute(callback);
+    }
+
+    /**
+     * 获取新闻列表信息
+     * @param object tag值，用于取消请求
+     * @param url 请求url
+     * @param callback 用户实现的回调接口
+     */
+    public static void getNewsList(Object object,String url,Callback callback){
+        OkHttpUtils.get().url(url).tag(object).build().execute(callback);
     }
 }

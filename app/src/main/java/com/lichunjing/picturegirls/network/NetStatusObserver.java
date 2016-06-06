@@ -5,6 +5,7 @@ package com.lichunjing.picturegirls.network;
  * 
  *
  */
+@Deprecated
 public interface NetStatusObserver {
 
 	/**

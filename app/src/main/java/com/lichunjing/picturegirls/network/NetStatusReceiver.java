@@ -1,8 +1,5 @@
 package com.lichunjing.picturegirls.network;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -10,6 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -18,10 +19,13 @@ import android.net.ConnectivityManager;
  * @author lcj621400
  *
  */
+@Deprecated
 public class NetStatusReceiver extends BroadcastReceiver {
 
+	private static final String TAG="NetStatusReceiver";
+
 	// 监听网络的广播接收器
-	private static NetStatusReceiver netStatusRecevier;
+	private static NetStatusReceiver netStatusRecevier=new NetStatusReceiver();
 
 	// 存储NetStatusObserver的集合，每注册一个则添加进集合，解除注册时，移除此NetStatusObserver
 	private static List<NetStatusObserver> observers = new ArrayList<NetStatusObserver>();
@@ -47,6 +51,7 @@ public class NetStatusReceiver extends BroadcastReceiver {
 			// 通知注册广播的用户，网络发生变化
 			notify(context);
 		}
+
 	}
 
 	// 通知所有注册广播的用户，网络发生变化
@@ -86,38 +91,45 @@ public class NetStatusReceiver extends BroadcastReceiver {
 
 	// 得到NetStatusRecevier的实例，使用同步锁，保证只实例化一个对象
 	private static NetStatusReceiver getRecevier() {
-		if (netStatusRecevier == null) {
-			synchronized (NetStatusReceiver.class) {
-				netStatusRecevier = new NetStatusReceiver();
-			}
-		}
-		return netStatusRecevier;
+//		if (netStatusRecevier == null) {
+//			synchronized (NetStatusReceiver.class) {
+//				netStatusRecevier = new NetStatusReceiver();
+//			}
+//		}
+//		return netStatusRecevier;
+
+		return  new NetStatusReceiver();
 	}
 
 	// 注册广播接收接收器，并传入NetStatusObserver(接口，内含网络变化的具体方法)
 	public static void registerNetStatusReceiver(Activity context,
 			NetStatusObserver observer) {
 		// 注册时，添加进集合
-		observers.add(observer);
-
+//		observers.add(observer);
+//		Log.d(TAG,"Observer添加注册："+context.getClass().getSimpleName());
+//		Log.d(TAG,"Observer数量："+observers.size());
 		// 添加action
 		IntentFilter filter = new IntentFilter();
 		// 添加网络变化的action
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		// 注册广播接收器
 		context.registerReceiver(getRecevier(), filter);
+		Log.d(TAG,context.getClass().getSimpleName()+"注册Observer");
 	}
 
 	public static void unRegistNetStatusReceiver(Activity context,
 			NetStatusObserver observer) {
+//		if (observers.contains(observer)) {
+//			// 集合中移除NetStatusObserver
+//			observers.remove(observer);
+//			Log.d(TAG,"Observer解除注册："+context.getClass().getSimpleName());
+//			Log.d(TAG,"Observer数量："+observers.size());
+//		}
 		// 判断activity是否被销毁
 		if (context != null) {
 			// 解除注册广播
 			context.unregisterReceiver(getRecevier());
-			if (observers.contains(observer)) {
-				// 集合中移除NetStatusObserver
-				observers.remove(observer);
-			}
+			Log.d(TAG,context.getClass().getSimpleName()+"解除注册Observer");
 		}
 	}
 

@@ -2,25 +2,21 @@ package com.lichunjing.picturegirls.cache;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.TextureView;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by lcj621400 on 2016/1/6.
  */
+@Deprecated
 public class CacheUtils {
 
     //缓存文件夹的名称
@@ -213,7 +209,7 @@ public class CacheUtils {
         }
 
     private File getOneCacheFile(String fileName){
-        File file=new File(CACHE_DIR,fileName);
+        File file=new File(CACHE_DIR,fileName+".txt");
         return file;
     }
 
