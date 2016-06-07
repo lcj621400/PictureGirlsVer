@@ -69,15 +69,18 @@ public abstract class NewsItemBaseFragment extends BaseNFragment{
 
     protected abstract void initNewsView(View view);
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         ViewGroup parent= (ViewGroup) contentView.getParent();
         if(parent!=null){
             parent.removeView(contentView);
             Log.d(TAG,"ViewGroup移除contentView");
         }
     }
+
+
 
 
 

@@ -130,6 +130,11 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         return toolbar;
     }
 
+    protected void setPageTitle(String title){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
+    }
+
     protected View.OnClickListener getDefaultBackListener() {
         return new View.OnClickListener() {
             @Override

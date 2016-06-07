@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.ViewPropertyAnimation;
 import com.lichunjing.picturegirls.R;
-import com.lichunjing.picturegirls.ui.pictures.mainpicture.MainActivity;
+import com.lichunjing.picturegirls.ui.mainview.AppMainActivity;
 
 /**
  * 启动欢迎页
@@ -55,7 +55,7 @@ public class WelcomeActivity extends Activity {
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                                startActivity(new Intent(WelcomeActivity.this, AppMainActivity.class));
                                 finish();
                             }
 

@@ -4,12 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -25,21 +20,11 @@ import com.lichunjing.picturegirls.ui.mainview.AppMainActivity;
 import com.lichunjing.picturegirls.ui.me.login.LoginActivity;
 import com.lichunjing.picturegirls.ui.me.setting.AboutActivity;
 import com.lichunjing.picturegirls.ui.me.setting.SettingsActivity;
-import com.lichunjing.picturegirls.ui.pictures.mainpicture.fragment.MainFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String[] TAB_TITLE = {"性感美女", "韩日美女", "丝袜美腿", "美女照片", "美女写真", "清纯美女", "性感车模"};
-    private static final int[] TAB_ID = {1, 2, 3, 4, 5, 6, 7};
 
-    private ViewPager mViewPager;
-    private MainViewPagerAdapter mViewPagerAdapter;
-    private List<MainFragment> fragments;
-    private TabLayout indicator;
 
     private long lastBackPressTime = 0;
     protected NetEvent netEvent;
@@ -67,15 +52,7 @@ public class MainActivity extends BaseActivity
 
 
 
-        mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
-        fragments=new ArrayList<>();
-        for(int i=0;i<TAB_ID.length;i++){
-            fragments.add(MainFragment.newInstance(TAB_ID[i]));
-        }
-        mViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager(), TAB_TITLE,fragments);
-        mViewPager.setAdapter(mViewPagerAdapter);
-        indicator.setupWithViewPager(mViewPager);
+
     }
 
     @Override
@@ -100,7 +77,7 @@ public class MainActivity extends BaseActivity
         } else {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastBackPressTime > 2000) {
-                Snackbar.make(mViewPager, "再按一次推出程序", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(drawer, "再按一次推出程序", Snackbar.LENGTH_SHORT).show();
                 lastBackPressTime = currentTime;
             } else {
                 super.onBackPressed();
@@ -188,32 +165,6 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    private class MainViewPagerAdapter extends FragmentPagerAdapter {
-
-        private String[] title;
-        private List<MainFragment> fragments;
-
-        public MainViewPagerAdapter(FragmentManager fm, String[] title, List<MainFragment> fragments) {
-            super(fm);
-            this.title = title;
-            this.fragments=fragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return title.length;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return title[position];
-        }
-    }
 
 
 }

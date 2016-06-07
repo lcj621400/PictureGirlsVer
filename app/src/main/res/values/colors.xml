@@ -3,7 +3,7 @@
     <color name="colorPrimary">#f71b85</color>
     <color name="colorPrimaryDark">#f71b85</color>
     <color name="colorAccent">#f71b85</color>
-    <color name="background">#FCCD3D</color>
+    <color name="background">#ffffff</color>
 
     <!--通用颜色-->
     <!--横线颜色-->
@@ -31,4 +31,8 @@
     <color name="login_button_text_color">#ffffff</color>
     <color name="login_button_bg_color">#fc61ac</color>
     <color name="login_button_bg_drak_color">#e21a7a</color>
+
+    <!--首页面tab字体颜色-->
+    <color name="tab_seleted_color">#f71b85</color>
+    <color name="tab_unseleted_color">#a9b7b7</color>
 </resources>

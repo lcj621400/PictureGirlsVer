@@ -1,29 +1,37 @@
 package com.lichunjing.picturegirls.ui.news.itemfragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.bumptech.glide.Glide;
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.cache.twocache.CacheManager;
 import com.lichunjing.picturegirls.http.Http;
 import com.lichunjing.picturegirls.http.PicUrl;
 import com.lichunjing.picturegirls.interfacel.OnRecyclerViewItemClickListener;
 import com.lichunjing.picturegirls.networkevent.NetUtils;
+import com.lichunjing.picturegirls.ui.news.NewsDetialActivity;
 import com.lichunjing.picturegirls.ui.news.bean.News;
 import com.lichunjing.picturegirls.ui.news.itemfragment.base.NewsItemBaseFragment;
+import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +58,7 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
 
     private int page=1;
     private int rows=20;
+    private boolean firstLoad=true;
     /**
      * 静态方法获取实例
      * @param type
@@ -74,14 +83,16 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
 
     @Override
     protected void onLazyLoad() {
-        currentEventType=NORMAL;
-        swipeToLoadLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeToLoadLayout.setRefreshing(true);
-                getDatas();
-            }
-        });
+        if(firstLoad) {
+            swipeToLoadLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeToLoadLayout.setRefreshing(true);
+                    getDatas();
+                }
+            });
+            firstLoad=false;
+        }
     }
 
     @Override
@@ -101,9 +112,17 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
             @Override
             public void onItemClick(RecyclerView.ViewHolder viewHolder) {
                 int position=viewHolder.getAdapterPosition();
+                String url=datas.get(position).getFromurl();
+                Intent detialIntent=new Intent(activity, NewsDetialActivity.class);
+                detialIntent.putExtra(NewsDetialActivity.DETIAL_URL,url);
+                startActivity(detialIntent);
             }
         });
+        datas=new ArrayList<>();
+        adapter=new NewsAdapter(this,datas);
+        recyclerView.setAdapter(adapter);
     }
+
 
     @Override
     protected int getLayoutId() {
@@ -114,13 +133,14 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
         if(cacheTask!=null){
             cacheTask.cancel(true);
         }
-        String url=String.format(PicUrl.GET_NEWS_URL,new String[]{String.valueOf(newsType),String.valueOf(page),String.valueOf(rows)});
+        String url=String.format(PicUrl.GET_NEWS_URL,new Object[]{String.valueOf(newsType),String.valueOf(page),String.valueOf(rows)});
         boolean hasNetWork= NetUtils.isConnected(activity.getApplicationContext());
         if(hasNetWork) {
             cacheTask = new LoadCacheTask(activity, url, false,this);
         }else {
             cacheTask = new LoadCacheTask(activity, url, true,this);
         }
+        cacheTask.execute();
     }
 
     private void getNetDatas(final String url){
@@ -148,20 +168,14 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
     }
 
     private void displayNews(News news){
-        if(datas==null){
-            datas=new ArrayList<>();
-        }
-        if(currentEventType==NORMAL){
-            datas.addAll(news.getTngou());
-            adapter=new NewsAdapter(datas);
-            recyclerView.setAdapter(adapter);
-            swipeToLoadLayout.setRefreshing(false);
-        }else if(currentEventType==REFRESH){
+        if(currentEventType==REFRESH){
+            Log.d(TAG,"刷新返回");
             datas.clear();
             datas.addAll(news.getTngou());
             adapter.notifyDataSetChanged();
             swipeToLoadLayout.setRefreshing(false);
         }else if(currentEventType==LOADMORE){
+            Log.d(TAG,"加载更多返回");
             datas.addAll(news.getTngou());
             adapter.notifyDataSetChanged();
             swipeToLoadLayout.setLoadingMore(false);
@@ -180,6 +194,7 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
         currentEventType=LOADMORE;
         page++;
         getDatas();
+        Log.d(TAG,"加载更多");
     }
 
     @Override
@@ -187,6 +202,7 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
         currentEventType=REFRESH;
         page=1;
         getDatas();
+        Log.d(TAG,"刷新");
     }
 
     /**
@@ -197,10 +213,12 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
     @Override
     public void onLoad(News cache, String key) {
         if(cache!=null){
+            Log.d(TAG,"读取缓存");
             displayNews(cache);
         }else {
             boolean hasNetWork=NetUtils.isConnected(activity.getApplicationContext());
             if(hasNetWork){
+                Log.d(TAG,"联网加载");
                 getNetDatas(key);
             }else {
                 Toast.makeText(activity.getApplicationContext(),"没有网络链接",Toast.LENGTH_SHORT).show();
@@ -209,21 +227,37 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
 
     }
 
+    @Override
+    public void onDestroy() {
+        OkHttpUtils.getInstance().cancelTag(this);
+        super.onDestroy();
+    }
+
     public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
 
         private List<News.NewsBean> datas;
-        public NewsAdapter(List<News.NewsBean> datas){
+        private SimpleDateFormat format;
+        private NewsItemFragment fragment;
+        public NewsAdapter(NewsItemFragment fragment,List<News.NewsBean> datas){
             this.datas=datas;
+            this.fragment=fragment;
+            this.format=new SimpleDateFormat("MM-dd HH:mm:ss");
         }
 
         @Override
         public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return null;
+            return new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_newsitem,null));
         }
 
         @Override
         public void onBindViewHolder(NewsViewHolder holder, int position) {
-
+            News.NewsBean news = datas.get(position);
+            holder.newsTitle.setText(news.getTitle());
+            holder.newsDes.setText(news.getDescription());
+            holder.newsFrom.setText(news.getFromname());
+            holder.newsCount.setText(String.valueOf(news.getCount()));
+            holder.newsTime.setText(format.format(news.getTime()));
+            Glide.with(fragment).load(PicUrl.BASE_IMAGE_URL+news.getImg()).into(holder.newsImg);
         }
 
         @Override
@@ -232,9 +266,20 @@ public class NewsItemFragment extends NewsItemBaseFragment implements
         }
 
         class NewsViewHolder extends RecyclerView.ViewHolder{
-
+            TextView newsTitle;
+            TextView newsDes;
+            TextView newsFrom;
+            TextView newsCount;
+            TextView newsTime;
+            ImageView newsImg;
             public NewsViewHolder(View itemView) {
                 super(itemView);
+                newsTitle= (TextView) itemView.findViewById(R.id.news_title);
+                newsDes= (TextView) itemView.findViewById(R.id.news_des);
+                newsFrom= (TextView) itemView.findViewById(R.id.news_from);
+                newsCount= (TextView) itemView.findViewById(R.id.news_count);
+                newsTime= (TextView) itemView.findViewById(R.id.news_time);
+                newsImg= (ImageView) itemView.findViewById(R.id.news_img);
             }
         }
     }

@@ -5,10 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.lichunjing.picturegirls.R;
 import com.lichunjing.picturegirls.baseui.BaseNFragment;
+import com.lichunjing.picturegirls.ui.mainview.AppMainActivity;
 import com.lichunjing.picturegirls.ui.news.itemfragment.NewsItemFragment;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class NewsMainFragment extends BaseNFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_newsmain;
+        return R.layout.fragment_main_news;
     }
 
     @Override
@@ -38,8 +40,25 @@ public class NewsMainFragment extends BaseNFragment {
         mainNewsIndicator= (TabLayout) view.findViewById(R.id.main_news_indicator);
         mainNewsViewPager= (ViewPager) view.findViewById(R.id.main_news_viewpager);
         mainNewsAdapter=new MainNewsAdapter(getChildFragmentManager(),titles,generateFragments());
+        mainNewsViewPager.setAdapter(mainNewsAdapter);
+        mainNewsViewPager.setOffscreenPageLimit(6);
         mainNewsIndicator.setupWithViewPager(mainNewsViewPager);
-
+        final Toolbar toolbar= (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar.setTitle("新闻资讯");
+        toolbar.setNavigationIcon(R.drawable.main_menu_icon);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(activity!=null){
+                    ((AppMainActivity)activity).onCustomMenuClick("新闻");
+                }else {
+                    activity=getActivity();
+                    if(activity!=null){
+                        ((AppMainActivity)activity).onCustomMenuClick("新闻");
+                    }
+                }
+            }
+        });
     }
 
     /**
